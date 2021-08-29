@@ -14,15 +14,15 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
         public Worker(ILogger<Worker> logger)
         {
-            _logger = logger;
+            this._logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
-                await Task.Delay(1000, stoppingToken);
+                this._logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
             }
         }
     }

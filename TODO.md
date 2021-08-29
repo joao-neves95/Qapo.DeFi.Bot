@@ -1,7 +1,7 @@
 ## TODO
 
 - Set up DI
-- Add MediatR
+- Set up MediatR
 - Set up the initial strategies mechanic and architecture
 - Set up Web3 connection
 - Strategies:
@@ -12,5 +12,12 @@
       - 3) Deposit rest of ICE in Iron Lending
   - Automate app.apeswap.finance
 - Improve the strategies mechanic and architecture
+- Create vaults for each strategy for better strategy switching automation
 - Create vaults for each strategy to support external addresses
+- Add multi-chain support
 - Add RabbitMQ
+- Create Docs at gitbook.io
+  - E.g.:
+    - https://docs.yearn.finance
+    - https://docs.polycat.finance
+    - https://polypup-farm.gitbook.io/polypup-layer-3-ball-token
