@@ -22,6 +22,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             while (!stoppingToken.IsCancellationRequested)
             {
                 this._logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+
                 await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
             }
         }
