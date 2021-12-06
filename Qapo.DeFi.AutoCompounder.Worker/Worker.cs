@@ -1,18 +1,17 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 
 namespace Qapo.DeFi.AutoCompounder.Worker
 {
     public class Worker : BackgroundService
     {
-        private readonly ILogger<Worker> _logger;
+        private readonly ICustomLoggerService _logger;
 
-        public Worker(ILogger<Worker> logger)
+        public Worker(ICustomLoggerService logger)
         {
             this._logger = logger;
         }
@@ -21,7 +20,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                this._logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+                this._logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
 
                 await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
             }

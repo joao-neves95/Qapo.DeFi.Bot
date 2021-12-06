@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Autofac;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -9,16 +10,25 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 {
     public static class Program
     {
+        private static IContainer container;
+
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            ContainerBuilder containerBuilder = new ContainerBuilder();
+            IoC.Configure(containerBuilder);
+            Program.container = containerBuilder.Build();
+
+            using (ILifetimeScope scope = Program.container.BeginLifetimeScope())
+            {
+                CreateHostBuilder(args).Build().Run();
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args)
         {
             return Host
                 .CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) => Startup.Configure(hostContext, services));
+                .ConfigureServices((hostContext, services) => services.AddHostedService<Worker>());
         }
     }
 }
