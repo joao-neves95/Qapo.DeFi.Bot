@@ -1,8 +1,11 @@
 using System.Reflection;
 
-using MediatR;
 using Autofac;
+using MediatR;
+using Serilog;
+using Serilog.Core;
 
+using Qapo.DeFi.AutoCompounder.Infrastructure.TypeFactory;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Commands;
 
@@ -42,10 +45,15 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
             #region INFRASTRUCTURE SERVICES
 
-            // containerBuilder
-            //     .RegisterType<ConsoleLogger>()
-            //     .As<ICustomLoggerService>()
-            //     .InstancePerLifetimeScope();
+            containerBuilder
+                .RegisterInstance(TypeFac.GetInstance<Logger>(InfrastructureType.Serilog))
+                .As<ILogger>()
+                .SingleInstance();
+
+            containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.SerilogLoggerService))
+                .As<ICustomLoggerService>()
+                .InstancePerLifetimeScope();
 
             #endregion INFRASTRUCTURE SERVICES
         }
