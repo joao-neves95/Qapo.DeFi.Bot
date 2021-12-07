@@ -1,7 +1,13 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
-
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Qapo.DeFi.AutoCompounder.Infrastructure\Qapo.DeFi.AutoCompounder.Infrastructure.csproj"/>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="2.10.0"/>
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.0"/>
+		<PackageReference Include="Serilog.Sinks.Console" Version="4.0.1"/>
+	</ItemGroup>
 </Project>
