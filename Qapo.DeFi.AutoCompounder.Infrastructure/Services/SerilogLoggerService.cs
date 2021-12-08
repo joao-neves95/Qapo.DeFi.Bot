@@ -1,7 +1,4 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 using Serilog;
 
@@ -9,13 +6,13 @@ using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 
 namespace Qapo.DeFi.AutoCompounder.Infrastructure.Services
 {
-    public class SerilogLoggerService : ICustomLoggerService
+    public class SerilogLoggerService : ILoggerService
     {
         private readonly ILogger logger;
 
         public SerilogLoggerService(ILogger logger)
         {
-            this.logger = logger;
+            this.logger = logger ?? throw new ArgumentNullException(nameof(SerilogLoggerService));
             Log.Logger = logger;
         }
 

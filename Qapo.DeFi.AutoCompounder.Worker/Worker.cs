@@ -9,9 +9,9 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 {
     public class Worker : BackgroundService
     {
-        private readonly ICustomLoggerService _logger;
+        private readonly ILoggerService _logger;
 
-        public Worker(ICustomLoggerService logger)
+        public Worker(ILoggerService logger)
         {
             this._logger = logger;
         }

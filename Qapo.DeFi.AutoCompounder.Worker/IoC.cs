@@ -45,6 +45,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
             #region INFRASTRUCTURE SERVICES
 
+            // TODO: Refactor. Move the configuration here.
             containerBuilder
                 .RegisterInstance(TypeFac.GetInstance<Logger>(InfrastructureType.Serilog))
                 .As<ILogger>()
@@ -52,7 +53,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.SerilogLoggerService))
-                .As<ICustomLoggerService>()
+                .As<ILoggerService>()
                 .InstancePerLifetimeScope();
 
             #endregion INFRASTRUCTURE SERVICES

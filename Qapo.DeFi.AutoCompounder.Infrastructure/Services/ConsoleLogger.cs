@@ -4,7 +4,7 @@ using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 
 namespace Qapo.DeFi.AutoCompounder.Infrastructure.Services
 {
-    public class ConsoleLogger : ICustomLoggerService
+    public class ConsoleLogger : ILoggerService
     {
         public void LogDebug(string content)
         {

@@ -1,11 +1,8 @@
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Services
 {
-    public interface ICustomLoggerService
+    public interface ILoggerService
     {
         /// <summary>
         /// For trace debugging; begin method X, end method X.
