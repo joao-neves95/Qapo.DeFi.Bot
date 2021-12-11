@@ -9,7 +9,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Config
 
         public float PolygonDefaultGas { get; set; }
 
-        public float PolygonMaxtGas { get; set; }
+        public float PolygonMaxGas { get; set; }
 
         public string FantomRpcEndpoint { get; set; }
 
