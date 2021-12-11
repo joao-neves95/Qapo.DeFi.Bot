@@ -18,11 +18,20 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            while (!stoppingToken.IsCancellationRequested)
+            try
             {
-                this._logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
+                while (!stoppingToken.IsCancellationRequested)
+                {
+                    this._logger.LogInformation($"Worker running at: {DateTimeOffset.Now}");
 
-                await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
+                    await Task.Delay(1000, stoppingToken).ConfigureAwait(false);
+                }
+            }
+            catch (Exception ex)
+            {
+                this._logger.LogFatal(ex, $"{nameof(Worker)}: FATAL EXCEPTION ON THE WORKER.");
+
+                throw;
             }
         }
     }
