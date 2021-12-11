@@ -1,9 +1,7 @@
 ## TODO
 
-- Set up DI
-- Set up MediatR
 - Set up the initial strategies mechanic and architecture
-- Set up Web3 connection
+- Set up the Web3 connection
 - Strategies:
   - Automate app.iron.finance
     - E.g.:
