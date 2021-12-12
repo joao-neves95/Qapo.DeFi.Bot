@@ -5,7 +5,7 @@ using MediatR;
 using Serilog;
 using Serilog.Core;
 
-using Qapo.DeFi.AutoCompounder.Infrastructure.TypeFactory;
+using Qapo.DeFi.AutoCompounder.Infra.TypeFactory;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Commands;
 

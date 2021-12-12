@@ -2,9 +2,9 @@ using System;
 
 using Serilog;
 
-using Qapo.DeFi.AutoCompounder.Infrastructure.Services;
+using Qapo.DeFi.AutoCompounder.Infra.Services;
 
-namespace Qapo.DeFi.AutoCompounder.Infrastructure.TypeFactory
+namespace Qapo.DeFi.AutoCompounder.Infra.TypeFactory
 {
     public static class TypeFac
     {

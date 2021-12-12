@@ -1,4 +1,4 @@
-namespace Qapo.DeFi.AutoCompounder.Infrastructure.TypeFactory
+namespace Qapo.DeFi.AutoCompounder.Infra.TypeFactory
 {
     public enum InfrastructureType
     {

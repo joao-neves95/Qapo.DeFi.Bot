@@ -3,7 +3,7 @@
 		<TargetFramework>net6.0</TargetFramework>
 	</PropertyGroup>
 	<ItemGroup>
-		<ProjectReference Include="..\Qapo.DeFi.AutoCompounder.Infrastructure\Qapo.DeFi.AutoCompounder.Infrastructure.csproj"/>
+		<ProjectReference Include="..\Qapo.DeFi.AutoCompounder.Infra\Qapo.DeFi.AutoCompounder.Infra.csproj"/>
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Serilog" Version="2.10.0"/>

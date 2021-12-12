@@ -2,7 +2,7 @@ using System;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 
-namespace Qapo.DeFi.AutoCompounder.Infrastructure.Services
+namespace Qapo.DeFi.AutoCompounder.Infra.Services
 {
     public class ConsoleLogger : ILoggerService
     {

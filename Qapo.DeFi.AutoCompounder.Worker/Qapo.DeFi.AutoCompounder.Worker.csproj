@@ -10,6 +10,6 @@
 	</ItemGroup>
 	<ItemGroup>
 	  <ProjectReference Include="..\Qapo.DeFi.AutoCompounder.Core\Qapo.DeFi.AutoCompounder.Core.csproj" />
-	  <ProjectReference Include="..\Qapo.DeFi.AutoCompounder.Infrastructure.TypeFactory\Qapo.DeFi.AutoCompounder.Infrastructure.TypeFactory.csproj" />
+	  <ProjectReference Include="..\Qapo.DeFi.AutoCompounder.Infra.TypeFactory\Qapo.DeFi.AutoCompounder.Infra.TypeFactory.csproj" />
 	</ItemGroup>
 </Project>
