@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Numerics;
@@ -9,12 +10,14 @@ using Nethereum.RPC.Eth.DTOs;
 using Nethereum.Contracts.CQS;
 using Nethereum.Contracts.ContractHandlers;
 using Nethereum.Contracts;
-using System.Threading;
-using Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat.ContractDefinition;
+
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services;
+using Qapo.DeFi.AutoCompounder.Core.Models.Web3.AutoCompoundingLockedStratModels;
+using Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat.DeploymentDefinition;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
 {
-    public partial class SushiSwapLpLockedStratService
+    public partial class SushiSwapLpLockedStratService : IAutoCompoundingLockedStratService
     {
         public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, SushiSwapLpLockedStratDeployment sushiSwapLpLockedStratDeployment, CancellationTokenSource cancellationTokenSource = null)
         {
@@ -56,7 +59,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var depositFunction = new DepositFunction();
                 depositFunction.Amount = amount;
-            
+
              return ContractHandler.SendRequestAsync(depositFunction);
         }
 
@@ -64,7 +67,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var depositFunction = new DepositFunction();
                 depositFunction.Amount = amount;
-            
+
              return ContractHandler.SendRequestAndWaitForReceiptAsync(depositFunction, cancellationToken);
         }
 
@@ -113,7 +116,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
             return ContractHandler.QueryAsync<GetDeployedBalanceFunction, BigInteger>(getDeployedBalanceFunction, blockParameter);
         }
 
-        
+
         public Task<BigInteger> GetDeployedBalanceQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetDeployedBalanceFunction, BigInteger>(null, blockParameter);
@@ -124,7 +127,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
             return ContractHandler.QueryAsync<GetPendingRewardAmountFunction, BigInteger>(getPendingRewardAmountFunction, blockParameter);
         }
 
-        
+
         public Task<BigInteger> GetPendingRewardAmountQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetPendingRewardAmountFunction, BigInteger>(null, blockParameter);
@@ -135,7 +138,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
             return ContractHandler.QueryAsync<GetTvlFunction, BigInteger>(getTvlFunction, blockParameter);
         }
 
-        
+
         public Task<BigInteger> GetTvlQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetTvlFunction, BigInteger>(null, blockParameter);
@@ -146,7 +149,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
             return ContractHandler.QueryAsync<GetUndeployedBalanceFunction, BigInteger>(getUndeployedBalanceFunction, blockParameter);
         }
 
-        
+
         public Task<BigInteger> GetUndeployedBalanceQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<GetUndeployedBalanceFunction, BigInteger>(null, blockParameter);
@@ -157,7 +160,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
             return ContractHandler.QueryAsync<OwnerFunction, string>(ownerFunction, blockParameter);
         }
 
-        
+
         public Task<string> OwnerQueryAsync(BlockParameter blockParameter = null)
         {
             return ContractHandler.QueryAsync<OwnerFunction, string>(null, blockParameter);
@@ -237,7 +240,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var transferOwnershipFunction = new TransferOwnershipFunction();
                 transferOwnershipFunction.NewOwner = newOwner;
-            
+
              return ContractHandler.SendRequestAsync(transferOwnershipFunction);
         }
 
@@ -245,7 +248,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var transferOwnershipFunction = new TransferOwnershipFunction();
                 transferOwnershipFunction.NewOwner = newOwner;
-            
+
              return ContractHandler.SendRequestAndWaitForReceiptAsync(transferOwnershipFunction, cancellationToken);
         }
 
@@ -283,7 +286,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var untuckTokensFunction = new UntuckTokensFunction();
                 untuckTokensFunction.Token = token;
-            
+
              return ContractHandler.SendRequestAsync(untuckTokensFunction);
         }
 
@@ -291,7 +294,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var untuckTokensFunction = new UntuckTokensFunction();
                 untuckTokensFunction.Token = token;
-            
+
              return ContractHandler.SendRequestAndWaitForReceiptAsync(untuckTokensFunction, cancellationToken);
         }
 
@@ -309,7 +312,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var withdrawFunction = new WithdrawFunction();
                 withdrawFunction.Amount = amount;
-            
+
              return ContractHandler.SendRequestAsync(withdrawFunction);
         }
 
@@ -317,7 +320,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
         {
             var withdrawFunction = new WithdrawFunction();
                 withdrawFunction.Amount = amount;
-            
+
              return ContractHandler.SendRequestAndWaitForReceiptAsync(withdrawFunction, cancellationToken);
         }
 
