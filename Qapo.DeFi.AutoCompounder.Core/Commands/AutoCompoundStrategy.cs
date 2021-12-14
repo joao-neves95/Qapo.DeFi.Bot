@@ -1,13 +1,11 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 using MediatR;
+
+using Qapo.DeFi.AutoCompounder.Core.Models.Data;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Commands
 {
     public class AutoCompoundStrategy : IRequest<bool>
     {
+        public LockedVault LockedVault { get; set; }
     }
 }
