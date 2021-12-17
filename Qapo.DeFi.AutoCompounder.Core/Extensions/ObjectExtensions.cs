@@ -23,7 +23,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Extensions
 
         public static T? ThrowIfNullOrDefault<T>(this T? @instance, string paramName) where T : class
         {
-            return @instance.ThrowIfNull(paramName).ThrowIfDefault(paramName);
+            return @instance.ThrowIfNull(paramName)?.ThrowIfDefault(paramName);
         }
 
         #nullable disable

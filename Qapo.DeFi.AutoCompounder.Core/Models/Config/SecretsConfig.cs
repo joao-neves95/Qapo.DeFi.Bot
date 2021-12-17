@@ -5,6 +5,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Config
     {
         public string WalletAddress { get; set; }
 
-        public string WalletPassword { get; set; }
+        public string WalletPrivateKey { get; set; }
     }
 }
