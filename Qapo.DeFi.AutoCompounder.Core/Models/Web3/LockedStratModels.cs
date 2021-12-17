@@ -7,7 +7,7 @@ using System.Numerics;
 using Nethereum.Contracts;
 using Nethereum.ABI.FunctionEncoding.Attributes;
 
-namespace Qapo.DeFi.AutoCompounder.Core.Models.Web3.AutoCompoundingLockedStratModels
+namespace Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels
 {
     public partial class DepositFunction : DepositFunctionBase { }
 

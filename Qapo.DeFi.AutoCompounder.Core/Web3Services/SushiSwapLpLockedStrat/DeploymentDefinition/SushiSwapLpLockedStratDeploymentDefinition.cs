@@ -10,7 +10,7 @@ using Nethereum.Contracts.CQS;
 using Nethereum.Contracts;
 using System.Threading;
 
-namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat.DeploymentDefinition
+namespace Qapo.DeFi.AutoCompounder.Core.Web3Services.SushiSwapLpLockedStrat.DeploymentDefinition
 {
     public partial class SushiSwapLpLockedStratDeployment : SushiSwapLpLockedStratDeploymentBase
     {

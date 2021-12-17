@@ -1,23 +1,16 @@
-using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Numerics;
-using Nethereum.Hex.HexTypes;
-using Nethereum.ABI.FunctionEncoding.Attributes;
-using Nethereum.Web3;
 using Nethereum.RPC.Eth.DTOs;
-using Nethereum.Contracts.CQS;
 using Nethereum.Contracts.ContractHandlers;
-using Nethereum.Contracts;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services;
-using Qapo.DeFi.AutoCompounder.Core.Models.Web3.AutoCompoundingLockedStratModels;
-using Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat.DeploymentDefinition;
+using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
+using Qapo.DeFi.AutoCompounder.Core.Web3Services.SushiSwapLpLockedStrat.DeploymentDefinition;
 
-namespace Qapo.DeFi.AutoCompounder.Infra.Web3Services.SushiSwapLpLockedStrat
+namespace Qapo.DeFi.AutoCompounder.Core.Web3Services.SushiSwapLpLockedStrat
 {
-    public partial class SushiSwapLpLockedStratService : IAutoCompoundingLockedStratService
+    public partial class SushiSwapLpLockedStratService : ILockedStratService
     {
         public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, SushiSwapLpLockedStratDeployment sushiSwapLpLockedStratDeployment, CancellationTokenSource cancellationTokenSource = null)
         {

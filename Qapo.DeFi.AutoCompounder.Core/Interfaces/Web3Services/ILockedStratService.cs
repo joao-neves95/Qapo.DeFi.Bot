@@ -7,11 +7,11 @@ using System.Threading.Tasks;
 
 using Nethereum.RPC.Eth.DTOs;
 
-using Qapo.DeFi.AutoCompounder.Core.Models.Web3.AutoCompoundingLockedStratModels;
+using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services
 {
-    public interface IAutoCompoundingLockedStratService
+    public interface ILockedStratService
     {
         Task<string> DepositRequestAsync(DepositFunction depositFunction);
 
