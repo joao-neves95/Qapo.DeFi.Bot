@@ -9,7 +9,7 @@ using Qapo.DeFi.AutoCompounder.Core.Models.Web3.External;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services.External
 {
-    public interface IUniswapV2RouterService
+    public interface IUniswapV2RouterService : IWeb3Service
     {
         Task<string> WETHQueryAsync(WETHFunction wETHFunction, BlockParameter blockParameter = null);
 

@@ -22,12 +22,13 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
         private readonly string _fileDbPath;
 
         private readonly IConfigurationService _configurationService;
+
         private readonly AppConfig _appConfig;
 
         public LockedVaultsFileStore(IConfigurationService configurationService)
         {
             this._configurationService = configurationService.ThrowIfNull(nameof(configurationService));
-            this._appConfig = this._configurationService.GetConfig<AppConfig>();
+            this._appConfig = this._configurationService.GetConfig<AppConfig>().GetAwaiter().GetResult();
 
             this._fileDbPath = Path.Combine(this._appConfig.LocalDataFilesPath, this._appConfig.LocalJsonDbFilesPath, $"{DbFileName}.json");
 

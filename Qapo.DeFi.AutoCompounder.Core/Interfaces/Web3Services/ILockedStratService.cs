@@ -8,7 +8,7 @@ using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services
 {
-    public interface ILockedStratService
+    public interface ILockedStratService : IWeb3Service
     {
         Task<string> DepositRequestAsync(DepositFunction depositFunction);
 
