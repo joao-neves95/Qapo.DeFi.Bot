@@ -11,9 +11,9 @@ namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores
 
         Task<LockedVault> GetByAddress(string vaultAddress);
 
-        Task<LockedVault> UpdateByAddress(LockedVault updatedLockedVault);
+        Task<LockedVault> Update(LockedVault updatedLockedVault);
 
-        Task<List<LockedVault>> UpdateByAddress(LockedVault[] updatedLockedVaults);
+        Task<List<LockedVault>> Update(LockedVault[] updatedLockedVaults);
 
         Task<bool> RemoveByAddress(string vaultAddress);
 

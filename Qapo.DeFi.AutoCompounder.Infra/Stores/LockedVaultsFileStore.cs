@@ -50,12 +50,12 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return allVaults.Find(lockedVault => lockedVault.VaultAddress == vaultAddress);
         }
 
-        public async Task<LockedVault> UpdateByAddress(LockedVault updatedLockedVault)
+        public async Task<LockedVault> Update(LockedVault updatedLockedVault)
         {
-            return (await this.UpdateByAddress(new[] { updatedLockedVault }))?[0];
+            return (await this.Update(new[] { updatedLockedVault }))?[0];
         }
 
-        public async Task<List<LockedVault>> UpdateByAddress(LockedVault[] updatedLockedVaults)
+        public async Task<List<LockedVault>> Update(LockedVault[] updatedLockedVaults)
         {
             List<LockedVault> allVaults = await this.GetAll();
 
@@ -74,7 +74,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                 }
 
                 vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVaults[i].MinGasPercentOffsetToExecute;
-                vaultToUpdate.TimestampOffsetBetweenExecutions = updatedLockedVaults[i].TimestampOffsetBetweenExecutions;
+                vaultToUpdate.SecondsOffsetBetweenExecutions = updatedLockedVaults[i].SecondsOffsetBetweenExecutions;
                 vaultToUpdate.StartBlock = updatedLockedVaults[i].StartBlock;
                 vaultToUpdate.StartTimestamp = updatedLockedVaults[i].StartTimestamp;
             }

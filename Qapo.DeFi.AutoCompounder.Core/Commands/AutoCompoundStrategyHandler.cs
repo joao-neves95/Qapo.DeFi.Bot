@@ -27,6 +27,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         private readonly AppConfig _appConfig;
 
+        private readonly ILockedVaultsStore _lockedVaultsStore;
+
         private readonly IBlockchainStore _blockchainStore;
 
         private readonly IDexStore _dexStore;
@@ -37,6 +39,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         public AutoCompoundStrategyHandler(
             IConfigurationService configurationService,
+            ILockedVaultsStore lockedVaultsStore,
             IBlockchainStore blockchainStore,
             IDexStore dexStore,
             ITokenStore tokenStore,
@@ -46,6 +49,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
             this._configurationService = configurationService.ThrowIfNull(nameof(IConfigurationService));
             this._appConfig = this._configurationService.GetConfig<AppConfig>().GetAwaiter().GetResult();
 
+            this._lockedVaultsStore = lockedVaultsStore.ThrowIfNull(nameof(ILockedVaultsStore));
             this._blockchainStore = blockchainStore.ThrowIfNull(nameof(IBlockchainStore));
             this._dexStore = dexStore.ThrowIfNull(nameof(IDexStore));
             this._tokenStore = tokenStore.ThrowIfNull(nameof(ITokenStore));
@@ -54,27 +58,49 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         public async Task<bool> Handle(AutoCompoundStrategy request, CancellationToken cancellationToken)
         {
-            // throw new NotImplementedException();
+            if (request.LockedVault.SecondsOffsetBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.SecondsOffsetBetweenExecutions)
+            )
+            {
+                return false;
+            }
 
-            // web3 here is temp.
+            if (request.LockedVault.StartTimestamp != null
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < request.LockedVault.StartTimestamp
+            )
+            {
+                return false;
+            }
+
             Account account = new Account(this._appConfig.SecretsConfig.WalletPrivateKey);
 
             Web3 web3 = new Web3(
                 account,
                 await this._blockchainStore.GetRpcUrlByChainId(request.LockedVault.BlockchainId)
             );
-            //
+
+            if (request.LockedVault.StartBlock != null)
+            {
+                BigInteger currentBlock = (await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync()).Value;
+
+                if (currentBlock < request.LockedVault.StartBlock)
+                {
+                    return false;
+                }
+                else
+                {
+                    request.LockedVault.StartBlock = null;
+                }
+            }
 
             ILockedStratService currentStratServiceHandler = LockedStratServicesFactory.Get(
-                // TODO: Create a generic strategy.
-                LockedStratServiceType.SushiSwapLpLockedStratService,
+                request.LockedVault.LockedStratServiceType,
                 web3,
                 request.LockedVault.VaultAddress
             );
 
             IUniswapV2RouterService uniswapV2RouterServiceHandler = UniswapV2RouterServicesFactory.Get(
-                // TODO: Create a generic strategy.
-                UniswapV2RouterServiceType.SpookySwapV2RouterService,
+                request.LockedVault.UniswapV2RouterServiceType,
                 web3,
                 (await this._dexStore.GetById(request.LockedVault.DexId)).ThrowIfNull("_dexStore.GetById").UniswapV2RouterAddress
             );
@@ -108,8 +134,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 return false;
             }
 
-            // TODO: Check if the gas is currently too high. Cancel execution if it is.
-
             // TODO: Use Poly for retry. If it fails, increase the gas by {amount} offset.
             await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
                 new ExecuteFunction()
@@ -117,6 +141,9 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                     GasPrice = 30,
                     Gas = executionCostEstimateInGas
                 });
+
+            request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            await this._lockedVaultsStore.Update(request.LockedVault);
 
             return true;
         }

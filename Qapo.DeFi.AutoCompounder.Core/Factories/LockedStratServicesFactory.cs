@@ -9,6 +9,15 @@ namespace Qapo.DeFi.AutoCompounder.Core.Factories
 {
     public static class LockedStratServicesFactory
     {
+        public static ILockedStratService Get(string web3ServiceTypeStr, Web3 web3, string contractAddress)
+        {
+            return LockedStratServicesFactory.Get(
+                (LockedStratServiceType)Enum.Parse(typeof(LockedStratServiceType), web3ServiceTypeStr),
+                web3,
+                contractAddress
+            );
+        }
+
         public static ILockedStratService Get(LockedStratServiceType web3ServiceType, Web3 web3, string contractAddress)
         {
             return web3ServiceType switch

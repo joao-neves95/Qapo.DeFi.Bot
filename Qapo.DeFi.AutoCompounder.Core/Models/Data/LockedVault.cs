@@ -15,14 +15,18 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 
         public int DexId { get; set; }
 
+        public string LockedStratServiceType { get; set; }
+
+        public string UniswapV2RouterServiceType { get; set; }
+
         public int? StartBlock { get; set; }
 
-        public int? StartTimestamp { get; set; }
+        public long? StartTimestamp { get; set; }
 
         public float? MinGasPercentOffsetToExecute { get; set; }
 
-        public int? TimestampOffsetBetweenExecutions { get; set; }
+        public int? SecondsOffsetBetweenExecutions { get; set; }
 
-        public int? LastFarmedTimestamp { get; set; }
+        public long? LastFarmedTimestamp { get; set; }
     }
 }
