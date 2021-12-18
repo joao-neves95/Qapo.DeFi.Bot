@@ -1,6 +1,7 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Numerics;
 
 using MediatR;
 using Nethereum.Web3;
@@ -10,10 +11,9 @@ using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services;
 using Qapo.DeFi.AutoCompounder.Core.Models.Config;
+using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
 using Qapo.DeFi.AutoCompounder.Core.Factories;
 using Qapo.DeFi.AutoCompounder.Core.Extensions;
-using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
-using System.Numerics;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Commands
 {
@@ -55,7 +55,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             ILockedStratService currentStratServiceHandler = LockedStratServicesFactory.Get(
                 // TODO: Create a generic strategy.
-                Web3ServiceType.SushiSwapLpLockedStratService,
+                LockedStratServiceType.SushiSwapLpLockedStratService,
                 web3,
                 request.LockedVault.VaultAddress
             );
