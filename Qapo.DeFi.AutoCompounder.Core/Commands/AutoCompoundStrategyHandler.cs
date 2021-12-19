@@ -8,17 +8,18 @@ using MediatR;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
 using Nethereum.RPC.Eth.DTOs;
+using Nethereum.Util;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services.External;
 using Qapo.DeFi.AutoCompounder.Core.Models.Config;
+using Qapo.DeFi.AutoCompounder.Core.Models.Data;
 using Qapo.DeFi.AutoCompounder.Core.Models.Web3.External;
 using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
 using Qapo.DeFi.AutoCompounder.Core.Factories;
 using Qapo.DeFi.AutoCompounder.Core.Extensions;
-
 
 namespace Qapo.DeFi.AutoCompounder.Core.Commands
 {
@@ -105,10 +106,12 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 request.LockedVault.VaultAddress
             );
 
+            Dex dex = ( await this._dexStore.GetById(request.LockedVault.DexId) ).ThrowIfNull("_dexStore.GetById");
+
             IUniswapV2RouterService uniswapV2RouterServiceHandler = UniswapV2RouterServicesFactory.Get(
-                request.LockedVault.UniswapV2RouterServiceType,
+                dex.UniswapV2RouterServiceType,
                 web3,
-                (await this._dexStore.GetById(request.LockedVault.DexId)).ThrowIfNull("_dexStore.GetById").UniswapV2RouterAddress
+                dex.UniswapV2RouterAddress
             );
 
             this._logger.LogInformation("Calculating if pending reward amount is profitable for strategy execution.");
@@ -154,9 +157,11 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
             TransactionReceipt transactionReceipt = await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
                 new ExecuteFunction()
                 {
-                    GasPrice = 30,
+                    // TODO: Calculate gas price.
+                    GasPrice = Nethereum.Web3.Web3.Convert.ToWei(31, UnitConversion.EthUnit.Gwei),
                     Gas = executionGasEstimate
-                });
+                }
+            );
 
             this._logger.LogInformation(".Execute() transaction ended.");
 

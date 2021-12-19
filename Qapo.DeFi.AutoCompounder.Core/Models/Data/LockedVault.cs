@@ -11,6 +11,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 
         public string RewardAssetAddress { get; set; }
 
+        public int PoolId { get; set; }
+
         public int BlockchainId { get; set; }
 
         public int NativeAssetId { get; set; }
@@ -18,8 +20,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
         public int DexId { get; set; }
 
         public string LockedStratServiceType { get; set; }
-
-        public string UniswapV2RouterServiceType { get; set; }
 
         public int? StartBlock { get; set; }
 
