@@ -7,6 +7,7 @@ using System.Numerics;
 using MediatR;
 using Nethereum.Web3;
 using Nethereum.Web3.Accounts;
+using Nethereum.RPC.Eth.DTOs;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
@@ -58,10 +59,13 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         public async Task<bool> Handle(AutoCompoundStrategy request, CancellationToken cancellationToken)
         {
+            this._logger.LogInformation($"Start {nameof(AutoCompoundStrategyHandler)} for {request.LockedVault.Name}.");
+
             if (request.LockedVault.SecondsOffsetBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.SecondsOffsetBetweenExecutions)
             )
             {
+                this._logger.LogInformation("Cancelled (SecondsOffsetBetweenExecutions).");
                 return false;
             }
 
@@ -69,6 +73,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < request.LockedVault.StartTimestamp
             )
             {
+                this._logger.LogInformation("Cancelled (StartTimestamp).");
                 return false;
             }
 
@@ -85,6 +90,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
                 if (currentBlock < request.LockedVault.StartBlock)
                 {
+                    this._logger.LogInformation("Cancelled (StartBlock).");
                     return false;
                 }
                 else
@@ -105,7 +111,11 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 (await this._dexStore.GetById(request.LockedVault.DexId)).ThrowIfNull("_dexStore.GetById").UniswapV2RouterAddress
             );
 
+            this._logger.LogInformation("Calculating if pending reward amount is profitable for strategy execution.");
+
             BigInteger pendingRewardAmount = await currentStratServiceHandler.GetPendingRewardAmountQueryAsync();
+
+            this._logger.LogInformation($"Pending reward amount: {pendingRewardAmount}");
 
             string nativeTokenAddress = await this._tokenStore.GetAddressById(request.LockedVault.NativeAssetId);
 
@@ -121,29 +131,54 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 }
             ))[2];
 
-            BigInteger executionCostEstimateInGas = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
+            this._logger.LogInformation($"Pending reward value in gas: {pendingRewardValueInGas}");
+
+            BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
+
+            this._logger.LogInformation($"Execution gas estimate: {pendingRewardValueInGas}");
 
             if ((
                 request.LockedVault.MinGasPercentOffsetToExecute != null
-                && pendingRewardValueInGas < executionCostEstimateInGas.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
+                && pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
                 )
-                || pendingRewardValueInGas < executionCostEstimateInGas.IncreasePercentage(_appConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
+                || pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(_appConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
             )
             {
-                // Cancel execution if it's not profitable.
+                this._logger.LogInformation("Canceled (execution not profitable).");
                 return false;
             }
 
+            this._logger.LogInformation("Sending .Execute() transaction...");
+
             // TODO: Use Poly for retry. If it fails, increase the gas by {amount} offset.
-            await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
+            TransactionReceipt transactionReceipt = await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
                 new ExecuteFunction()
                 {
                     GasPrice = 30,
-                    Gas = executionCostEstimateInGas
+                    Gas = executionGasEstimate
                 });
 
-            request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+            this._logger.LogInformation(".Execute() transaction ended.");
+
+            this._logger.LogInformation($"Gas price: {transactionReceipt.EffectiveGasPrice}");
+            this._logger.LogInformation($"Gas used: {transactionReceipt.GasUsed}");
+
+            if (transactionReceipt.Failed())
+            {
+                this._logger.LogError(".Execute() transaction failed.");
+                this._logger.LogError($"Logs: {transactionReceipt.Logs.ToString()}");
+            }
+            else
+            {
+                request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+
+                this._logger.LogInformation("Success.");
+                this._logger.LogInformation($"Logs: {transactionReceipt.Logs.ToString()}");
+            }
+
             await this._lockedVaultsStore.Update(request.LockedVault);
+
+            this._logger.LogInformation("");
 
             return true;
         }

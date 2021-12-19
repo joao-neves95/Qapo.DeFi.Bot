@@ -5,6 +5,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
     {
         public string VaultAddress { get; set; }
 
+        public string Name { get; set; }
+
         public string UnderlyingAssetAddress { get; set; }
 
         public string RewardAssetAddress { get; set; }
