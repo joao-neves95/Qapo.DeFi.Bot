@@ -1,53 +1,26 @@
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
-
-using Newtonsoft.Json;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
-using Qapo.DeFi.AutoCompounder.Core.Models.Config;
 using Qapo.DeFi.AutoCompounder.Core.Models.Data;
-using Qapo.DeFi.AutoCompounder.Core.Extensions;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
-    public class LockedVaultsFileStore : ILockedVaultsStore
+    public class LockedVaultsFileStore : FileStoreBase<LockedVault>, ILockedVaultsStore
     {
-        private const string DbFileName = nameof(LockedVaultsFileStore);
-
-        private readonly string _fileDbPath;
-
-        private readonly IConfigurationService _configurationService;
-
-        private readonly AppConfig _appConfig;
-
         public LockedVaultsFileStore(IConfigurationService configurationService)
+            : base(configurationService, nameof(LockedVaultsFileStore))
         {
-            this._configurationService = configurationService.ThrowIfNull(nameof(configurationService));
-            this._appConfig = this._configurationService.GetConfig<AppConfig>().GetAwaiter().GetResult();
-
-            this._fileDbPath = Path.Combine(this._appConfig.LocalDataFilesPath, this._appConfig.LocalJsonDbFilesPath, $"{DbFileName}.json");
-
-            if (!File.Exists(this._fileDbPath))
-            {
-                File.WriteAllText(this._fileDbPath, "[]", Encoding.UTF8);
-            }
-        }
-
-        public async Task<List<LockedVault>> GetAll()
-        {
-            return await this.GetEntireList();
         }
 
         public async Task<LockedVault> GetByAddress(string vaultAddress)
         {
-            List<LockedVault> allVaults = await this.GetEntireList();
+            List<LockedVault> allVaults = await this.GetAll();
 
-            return allVaults.Find(lockedVault => lockedVault.VaultAddress == vaultAddress);
+            return allVaults?.Find(lockedVault => lockedVault.VaultAddress == vaultAddress);
         }
 
         public async Task<LockedVault> Update(LockedVault updatedLockedVault)
@@ -57,7 +30,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
         public async Task<List<LockedVault>> Update(LockedVault[] updatedLockedVaults)
         {
-            List<LockedVault> allVaults = await this.GetAll();
+            List<LockedVault> allVaults = await base.GetAll();
 
             if (allVaults == null)
             {
@@ -66,22 +39,33 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
             for (int i = 0; i < updatedLockedVaults.Length; ++i)
             {
-                LockedVault vaultToUpdate = allVaults.Find(vault => vault.VaultAddress == updatedLockedVaults[i].VaultAddress);
+                LockedVault updatedLockedVault = updatedLockedVaults[i];
+                LockedVault vaultToUpdate = allVaults?.Find(vault => vault.VaultAddress == updatedLockedVault.VaultAddress);
 
                 if (vaultToUpdate == null)
                 {
                     continue;
                 }
 
-                vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVaults[i].MinGasPercentOffsetToExecute;
-                vaultToUpdate.SecondsOffsetBetweenExecutions = updatedLockedVaults[i].SecondsOffsetBetweenExecutions;
-                vaultToUpdate.StartBlock = updatedLockedVaults[i].StartBlock;
-                vaultToUpdate.StartTimestamp = updatedLockedVaults[i].StartTimestamp;
+                vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVault.MinGasPercentOffsetToExecute;
+                vaultToUpdate.SecondsOffsetBetweenExecutions = updatedLockedVault.SecondsOffsetBetweenExecutions;
+                vaultToUpdate.StartBlock = updatedLockedVault.StartBlock;
+                vaultToUpdate.StartTimestamp = updatedLockedVault.StartTimestamp;
             }
 
-            await this.SaveAll(allVaults);
+            await base.SaveAll(allVaults);
 
             return updatedLockedVaults.ToList();
+        }
+
+        public async Task<bool> Remove(LockedVault lockedVault)
+        {
+            return await this.RemoveByAddress(lockedVault.VaultAddress);
+        }
+
+        public async Task<bool> Remove(LockedVault[] lockedVaults)
+        {
+            return await this.RemoveByAddress(lockedVaults.Select(vault => vault.VaultAddress).ToArray());
         }
 
         public async Task<bool> RemoveByAddress(string vaultAddress)
@@ -99,21 +83,9 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             }
 
             allVaults.RemoveAll(vault => vaultAddresses.Contains(vault.VaultAddress));
-            await this.SaveAll(allVaults);
+            await base.SaveAll(allVaults);
 
             return true;
-        }
-
-        private async Task<List<LockedVault>> GetEntireList()
-        {
-            string vaultArrayStr = await File.ReadAllTextAsync(this._fileDbPath);
-
-            return JsonConvert.DeserializeObject<List<LockedVault>>(vaultArrayStr);
-        }
-
-        private async Task SaveAll(List<LockedVault> lockedVaults)
-        {
-            await File.WriteAllTextAsync(this._fileDbPath, JsonConvert.SerializeObject(lockedVaults, Formatting.None), Encoding.UTF8);
         }
     }
 }
