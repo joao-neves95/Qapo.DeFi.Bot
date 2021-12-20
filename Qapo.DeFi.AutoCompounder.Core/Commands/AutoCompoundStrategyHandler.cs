@@ -24,8 +24,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 {
     public class AutoCompoundStrategyHandler : IRequestHandler<AutoCompoundStrategy, bool>
     {
-        private readonly IConfigurationService _configurationService;
-
         private readonly ILockedVaultsStore _lockedVaultsStore;
 
         private readonly IBlockchainStore _blockchainStore;
@@ -53,7 +51,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         public async Task<bool> Handle(AutoCompoundStrategy request, CancellationToken cancellationToken)
         {
-            this._logger.LogInformation($"Start {nameof(AutoCompoundStrategyHandler)} for {request.LockedVault.Name}.");
+            this._logger.LogInformation($"Running {nameof(AutoCompoundStrategyHandler)} for {request.LockedVault.Name}...");
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
