@@ -14,7 +14,6 @@ using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services.External;
-using Qapo.DeFi.AutoCompounder.Core.Models.Config;
 using Qapo.DeFi.AutoCompounder.Core.Models.Data;
 using Qapo.DeFi.AutoCompounder.Core.Models.Web3.External;
 using Qapo.DeFi.AutoCompounder.Core.Models.Web3.LockedStratModels;
@@ -27,8 +26,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
     {
         private readonly IConfigurationService _configurationService;
 
-        private readonly AppConfig _appConfig;
-
         private readonly ILockedVaultsStore _lockedVaultsStore;
 
         private readonly IBlockchainStore _blockchainStore;
@@ -40,7 +37,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
         private readonly ILoggerService _logger;
 
         public AutoCompoundStrategyHandler(
-            IConfigurationService configurationService,
             ILockedVaultsStore lockedVaultsStore,
             IBlockchainStore blockchainStore,
             IDexStore dexStore,
@@ -48,9 +44,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
             ILoggerService logger
         )
         {
-            this._configurationService = configurationService.ThrowIfNull(nameof(IConfigurationService));
-            this._appConfig = this._configurationService.GetConfig<AppConfig>().GetAwaiter().GetResult();
-
             this._lockedVaultsStore = lockedVaultsStore.ThrowIfNull(nameof(ILockedVaultsStore));
             this._blockchainStore = blockchainStore.ThrowIfNull(nameof(IBlockchainStore));
             this._dexStore = dexStore.ThrowIfNull(nameof(IDexStore));
@@ -61,6 +54,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
         public async Task<bool> Handle(AutoCompoundStrategy request, CancellationToken cancellationToken)
         {
             this._logger.LogInformation($"Start {nameof(AutoCompoundStrategyHandler)} for {request.LockedVault.Name}.");
+
+            request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
             if (request.LockedVault.SecondsOffsetBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.SecondsOffsetBetweenExecutions)
@@ -78,7 +73,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 return false;
             }
 
-            Account account = new Account(this._appConfig.SecretsConfig.WalletPrivateKey);
+            Account account = new Account(request.AppConfig.SecretsConfig.WalletPrivateKey);
 
             Web3 web3 = new Web3(
                 account,
@@ -144,7 +139,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 request.LockedVault.MinGasPercentOffsetToExecute != null
                 && pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
                 )
-                || pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(_appConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
+                || pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
             )
             {
                 this._logger.LogInformation("Canceled (execution not profitable).");
