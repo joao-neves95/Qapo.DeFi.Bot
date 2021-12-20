@@ -63,6 +63,11 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
         public async Task<bool> Remove(Dex[] dex)
         {
+            if (dex.Length == 0)
+            {
+                return false;
+            }
+
             List<Dex> allDexs = await base.GetAll();
             IEnumerable<int> allDexIds = allDexs.Select(dex => dex.Id);
 

@@ -62,6 +62,11 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
         public async Task<bool> Remove(Blockchain[] blockchains)
         {
+            if (blockchains.Length == 0)
+            {
+                return false;
+            }
+
             List<Blockchain> allBlockchains = await base.GetAll();
 
             if (allBlockchains == null)

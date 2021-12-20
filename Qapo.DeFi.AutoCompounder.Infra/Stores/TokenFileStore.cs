@@ -70,6 +70,11 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
         public async Task<bool> Remove(Token[] tokens)
         {
+            if (tokens.Length == 0)
+            {
+                return false;
+            }
+
             List<Token> allTokens = await base.GetAll();
             IEnumerable<int> allTokenIds = allTokens.Select(token => token.Id);
 

@@ -75,6 +75,11 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
         public async Task<bool> RemoveByAddress(string[] vaultAddresses)
         {
+            if (vaultAddresses.Length == 0)
+            {
+                return false;
+            }
+
             List<LockedVault> allVaults = await this.GetAll();
 
             if (allVaults == null)
