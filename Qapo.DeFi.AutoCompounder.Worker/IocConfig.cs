@@ -3,16 +3,15 @@ using System.Reflection;
 using Autofac;
 using MediatR;
 using Serilog;
-using Serilog.Core;
 
 using Qapo.DeFi.AutoCompounder.Infra.TypeFactory;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
-using Qapo.DeFi.AutoCompounder.Core.Commands;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
+using Qapo.DeFi.AutoCompounder.Core.Commands;
 
 namespace Qapo.DeFi.AutoCompounder.Worker
 {
-    public static class IoC
+    public static class IocConfig
     {
         public static void Configure(ContainerBuilder containerBuilder)
         {

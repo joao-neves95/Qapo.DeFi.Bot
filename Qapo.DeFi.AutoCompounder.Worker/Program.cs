@@ -12,7 +12,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
         public static void Main(string[] args)
         {
             ContainerBuilder containerBuilder = new ContainerBuilder();
-            IoC.Configure(containerBuilder);
+            IocConfig.Configure(containerBuilder);
             Program.container = containerBuilder.Build();
 
             using (ILifetimeScope scope = Program.container.BeginLifetimeScope())
