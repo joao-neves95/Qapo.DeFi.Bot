@@ -47,7 +47,10 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         public async Task<bool> Handle(UpdateLocalDbFromDataFiles request, CancellationToken cancellationToken)
         {
+            // TODO: Create a generic method.
+
             this._loggerService.LogInformation($"Running {nameof(UpdateLocalDbFromDataFilesHandler)}...");
+            this._loggerService.LogInformation($"Updating DB");
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
