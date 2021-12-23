@@ -8,6 +8,7 @@ using Serilog.Core;
 using Qapo.DeFi.AutoCompounder.Infra.TypeFactory;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Commands;
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 
 namespace Qapo.DeFi.AutoCompounder.Worker
 {
@@ -41,9 +42,16 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             #endregion MediatR
 
             #region CORE SERVICES
+
             #endregion CORE SERVICES
 
             #region INFRASTRUCTURE SERVICES
+
+            containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.LocalFileConfigurationService))
+                .As<IConfigurationService>()
+                .InstancePerDependency()
+            ;
 
             // TODO: Refactor. Move the configuration here.
             containerBuilder
@@ -55,6 +63,24 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                 .RegisterType(TypeFac.GetType(InfrastructureType.SerilogLoggerService))
                 .As<ILoggerService>()
                 .InstancePerLifetimeScope();
+
+            containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.BlockchainFileStore))
+                .As<IBlockchainStore>()
+                .InstancePerDependency()
+            ;
+
+            containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.DexFileStore))
+                .As<IDexStore>()
+                .InstancePerDependency()
+            ;
+
+            containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.LockedVaultsFileStore))
+                .As<ILockedVaultsStore>()
+                .InstancePerDependency()
+            ;
 
             #endregion INFRASTRUCTURE SERVICES
         }

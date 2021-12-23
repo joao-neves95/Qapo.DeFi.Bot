@@ -9,10 +9,10 @@ using Qapo.DeFi.AutoCompounder.Core.Models.Data;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
-    public class TokensFileStore : FileStoreBase<Token>, ITokenStore
+    public class TokenFileStore : FileStoreBase<Token>, ITokenStore
     {
-        public TokensFileStore(IConfigurationService configurationService)
-            : base(configurationService, nameof(TokensFileStore))
+        public TokenFileStore(IConfigurationService configurationService)
+            : base(configurationService, nameof(TokenFileStore))
         {
         }
 
