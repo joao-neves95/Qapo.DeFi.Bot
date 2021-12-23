@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 
 using MediatR;
+using Serilog;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
@@ -42,13 +43,11 @@ namespace Qapo.DeFi.AutoCompounder.Worker
         {
             try
             {
-                AppConfig appConfig = null;
-
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     this._logger.LogInformation($"------  Worker running at: {DateTimeOffset.Now} ------");
 
-                    appConfig = await this._configurationService
+                    AppConfig appConfig = await this._configurationService
                         .GetConfig()
                         .ThrowIfNull($"{nameof(this._configurationService)}.GetConfig<{nameof(AppConfig)}>()")
                     ;
@@ -64,10 +63,14 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
                     await Task.Delay(appConfig.WorkerMillisecondsDelay, stoppingToken).ConfigureAwait(false);
                 }
+
+                await this.BeforeEndApplication();
             }
             catch (Exception ex)
             {
                 this._logger.LogFatal(ex, $"{nameof(Worker)}: FATAL EXCEPTION ON THE WORKER.");
+
+                await this.BeforeEndApplication();
 
                 throw;
             }
@@ -96,6 +99,13 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                     }
                 );
             }
+        }
+
+        private Task BeforeEndApplication()
+        {
+            Serilog.Log.CloseAndFlush();
+
+            return Task.CompletedTask;
         }
     }
 }

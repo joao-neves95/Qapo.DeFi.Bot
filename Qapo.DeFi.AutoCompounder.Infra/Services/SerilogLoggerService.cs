@@ -3,6 +3,7 @@ using System;
 using Serilog;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
+using Qapo.DeFi.AutoCompounder.Core.Extensions;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Services
 {
@@ -12,7 +13,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Services
 
         public SerilogLoggerService(ILogger logger)
         {
-            this.logger = logger ?? throw new ArgumentNullException(nameof(SerilogLoggerService));
+            this.logger = logger.ThrowIfNull(nameof(SerilogLoggerService));
             Log.Logger = logger;
         }
 

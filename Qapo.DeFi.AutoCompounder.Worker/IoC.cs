@@ -22,22 +22,27 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             containerBuilder
                 .RegisterType<Mediator>()
                 .As<IMediator>()
-                .InstancePerLifetimeScope();
+                .InstancePerLifetimeScope()
+            ;
 
             containerBuilder
                 .Register<ServiceFactory>(context =>
                 {
                     var componentContext = context.Resolve<IComponentContext>();
                     return type => componentContext.Resolve(type);
-                });
+                })
+            ;
 
             containerBuilder
-                .RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly).AsImplementedInterfaces();
+                .RegisterAssemblyTypes(typeof(IMediator).GetTypeInfo().Assembly)
+                .AsImplementedInterfaces()
+            ;
 
             // Command classes.
             containerBuilder
                 .RegisterAssemblyTypes(typeof(AutoCompoundStrategyHandler).GetTypeInfo().Assembly)
-                .AsClosedTypesOf(typeof(IRequestHandler<,>));
+                .AsClosedTypesOf(typeof(IRequestHandler<,>))
+            ;
 
             #endregion MediatR
 
@@ -53,16 +58,26 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                 .InstancePerDependency()
             ;
 
-            // TODO: Refactor. Move the configuration here.
             containerBuilder
-                .RegisterInstance(TypeFac.GetInstance<Logger>(InfrastructureType.Serilog))
+                .RegisterInstance(new LoggerConfiguration()
+                    .MinimumLevel.Information()
+                    .WriteTo.Async(config => config.Console())
+                    .WriteTo.Async(config => config.File(
+                        "_logs/log_.txt",
+                        rollingInterval: RollingInterval.Day,
+                        rollOnFileSizeLimit: true
+                    ))
+                    .CreateLogger()
+                )
                 .As<ILogger>()
-                .SingleInstance();
+                .SingleInstance()
+            ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.SerilogLoggerService))
                 .As<ILoggerService>()
-                .InstancePerLifetimeScope();
+                .InstancePerLifetimeScope()
+            ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.BlockchainFileStore))
