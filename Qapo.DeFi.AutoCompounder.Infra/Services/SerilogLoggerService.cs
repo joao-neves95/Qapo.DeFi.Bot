@@ -18,62 +18,62 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Services
 
         public void LogTrace(string content)
         {
-            logger.Verbose(content);
+            logger.Verbose($"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogTrace(Exception exception, string content)
         {
-            logger.Verbose(exception, content);
+            logger.Verbose(exception, $"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogDebug(string content)
         {
-            logger.Debug(content);
+            logger.Debug($"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogDebug(Exception exception, string content)
         {
-            logger.Debug(exception, content);
+            logger.Debug(exception, $"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogInformation(string content)
         {
-            logger.Information(content);
+            logger.Information($"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogInformation(Exception exception, string content)
         {
-            logger.Information(exception, content);
+            logger.Information(exception, $"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogWarning(string content)
         {
-            logger.Warning(content);
+            logger.Warning($"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogWarning(Exception exception, string content)
         {
-            logger.Warning(exception, content);
+            logger.Warning(exception, $"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogError(string content)
         {
-            logger.Error(content);
+            logger.Error($"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogError(Exception exception, string content)
         {
-            logger.Error(exception, content);
+            logger.Error(exception, $"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogFatal(string content)
         {
-            logger.Fatal(content);
+            logger.Fatal($"{DateTimeOffset.Now} - {content}");
         }
 
         public void LogFatal(Exception exception, string content)
         {
-            logger.Fatal(exception, content);
+            logger.Fatal(exception, $"{DateTimeOffset.Now} - {content}");
         }
     }
 }
