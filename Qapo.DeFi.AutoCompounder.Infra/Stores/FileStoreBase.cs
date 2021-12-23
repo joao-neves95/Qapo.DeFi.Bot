@@ -5,51 +5,74 @@ using System.Threading.Tasks;
 
 using Newtonsoft.Json;
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
-using Qapo.DeFi.AutoCompounder.Core.Models.Config;
 using Qapo.DeFi.AutoCompounder.Core.Extensions;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
     public abstract class FileStoreBase<TEntity>
     {
-        protected readonly IConfigurationService _configurationService;
+        protected readonly IConfigurationService<IAppConfig> _configurationService;
 
-        protected readonly AppConfig _appConfig;
+        protected readonly IAppConfig _appConfig;
 
-        protected readonly string _fileDbPath;
+        protected string DbFileName { get; private set; }
 
-        protected readonly string _dbFileName;
+        protected string FileDbPath { get; private set; }
 
-        protected FileStoreBase(IConfigurationService configurationService, string dbFileName)
+        protected FileStoreBase()
+        {
+        }
+
+        protected FileStoreBase(IConfigurationService<IAppConfig> configurationService, string dbFileName)
         {
             this._configurationService = configurationService.ThrowIfNull(nameof(configurationService));
-            this._appConfig = this._configurationService.GetConfig<AppConfig>().GetAwaiter().GetResult();
+            this._appConfig = this._configurationService.GetConfig().GetAwaiter().GetResult();
 
-            this._dbFileName = dbFileName;
-            this._fileDbPath = Path.Combine(this._appConfig.LocalDataFilesPath, this._appConfig.LocalJsonDbFilesPath, $"{_dbFileName}.json");
+            this.SetFileDbPath(this._appConfig.LocalJsonDbFilesPath, dbFileName);
+
+            this.EnsureCreated().GetAwaiter().GetResult();
+        }
+
+        protected void SetFileDbPath(string fileDbPath, string dbFileName)
+        {
+            this.DbFileName = dbFileName;
+            this.FileDbPath = Path.Combine(fileDbPath, $"{dbFileName}.json");
 
             this.EnsureCreated().GetAwaiter().GetResult();
         }
 
         protected async Task EnsureCreated()
         {
-            if (!File.Exists(this._fileDbPath))
+            if (!File.Exists(this.FileDbPath))
             {
-                await File.WriteAllTextAsync(this._fileDbPath, "[]", Encoding.UTF8);
+                await File.WriteAllTextAsync(this.FileDbPath, "[]", Encoding.UTF8);
             }
+        }
+
+        protected async Task<TEntity> GetEntity()
+        {
+            return await this.GetEntity<TEntity>();
+        }
+
+        protected async Task<T> GetEntity<T>()
+        {
+            string jsonStr = await File.ReadAllTextAsync(this.FileDbPath);
+
+            return JsonConvert.DeserializeObject<T>(jsonStr);
         }
 
         protected async Task<List<TEntity>> GetEntireEntityList()
         {
-            string vaultArrayStr = await File.ReadAllTextAsync(this._fileDbPath);
+            string jsonStr = await File.ReadAllTextAsync(this.FileDbPath);
 
-            return JsonConvert.DeserializeObject<List<TEntity>>(vaultArrayStr);
+            return JsonConvert.DeserializeObject<List<TEntity>>(jsonStr);
         }
 
         protected async Task SaveAll(List<TEntity> lockedVaults)
         {
-            await File.WriteAllTextAsync(this._fileDbPath, JsonConvert.SerializeObject(lockedVaults, Formatting.None), Encoding.UTF8);
+            await File.WriteAllTextAsync(this.FileDbPath, JsonConvert.SerializeObject(lockedVaults, Formatting.None), Encoding.UTF8);
         }
 
         public async Task<List<TEntity>> GetAll()

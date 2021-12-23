@@ -48,8 +48,8 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             #region INFRASTRUCTURE SERVICES
 
             containerBuilder
-                .RegisterType(TypeFac.GetType(InfrastructureType.LocalFileConfigurationService))
-                .As<IConfigurationService>()
+                .RegisterGeneric(TypeFac.GetType(InfrastructureType.LocalFileConfigurationService))
+                .As(typeof(IConfigurationService<>))
                 .InstancePerDependency()
             ;
 

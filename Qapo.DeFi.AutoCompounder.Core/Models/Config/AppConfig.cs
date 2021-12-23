@@ -1,7 +1,9 @@
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
+
 namespace Qapo.DeFi.AutoCompounder.Core.Models.Config
 {
-    public class AppConfig
+    public class AppConfig : IAppConfig
     {
         public string LocalDataFilesPath { get; set; }
 

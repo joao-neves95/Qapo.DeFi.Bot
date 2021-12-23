@@ -13,7 +13,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.TypeFactory
         {
             return infrastructureType switch
             {
-                InfrastructureType.LocalFileConfigurationService => typeof(LocalFileConfigurationService),
+                InfrastructureType.LocalFileConfigurationService => typeof(LocalFileConfigurationService<>),
                 InfrastructureType.SerilogLoggerService => typeof(SerilogLoggerService),
 
                 InfrastructureType.BlockchainFileStore => typeof(BlockchainFileStore),

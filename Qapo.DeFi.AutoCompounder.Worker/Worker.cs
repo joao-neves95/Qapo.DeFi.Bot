@@ -17,7 +17,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 {
     public class Worker : BackgroundService
     {
-        private readonly IConfigurationService _configurationService;
+        private readonly IConfigurationService<AppConfig> _configurationService;
 
         private readonly ILockedVaultsStore _lockedVaultsStore;
 
@@ -26,13 +26,13 @@ namespace Qapo.DeFi.AutoCompounder.Worker
         private readonly IMediator _mediator;
 
         public Worker(
-            IConfigurationService configurationService,
+            IConfigurationService<AppConfig> configurationService,
             ILockedVaultsStore lockedVaultsStore,
             ILoggerService logger,
             IMediator mediator
         )
         {
-            this._configurationService = configurationService.ThrowIfNull(nameof(IConfigurationService));
+            this._configurationService = configurationService.ThrowIfNull(nameof(IConfigurationService<AppConfig>));
             this._lockedVaultsStore = lockedVaultsStore.ThrowIfNull(nameof(ILockedVaultsStore));
             this._logger = logger.ThrowIfNull(nameof(ILoggerService));
             this._mediator = mediator.ThrowIfNull(nameof(IMediator));
@@ -49,7 +49,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                     this._logger.LogInformation($"------  Worker running at: {DateTimeOffset.Now} ------");
 
                     appConfig = await this._configurationService
-                        .GetConfig<AppConfig>()
+                        .GetConfig()
                         .ThrowIfNull($"{nameof(this._configurationService)}.GetConfig<{nameof(AppConfig)}>()")
                     ;
 

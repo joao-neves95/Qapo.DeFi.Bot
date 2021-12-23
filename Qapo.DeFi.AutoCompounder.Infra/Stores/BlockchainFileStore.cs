@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Models.Data;
@@ -11,7 +12,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
     public class BlockchainFileStore : FileStoreBase<Blockchain>, IBlockchainStore
     {
-        public BlockchainFileStore(IConfigurationService configurationService)
+        public BlockchainFileStore(IConfigurationService<IAppConfig> configurationService)
             : base(configurationService, nameof(BlockchainFileStore))
         {
         }

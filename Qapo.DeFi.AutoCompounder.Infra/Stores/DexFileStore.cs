@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Models.Data;
@@ -11,7 +12,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
     public class DexFileStore : FileStoreBase<Dex>, IDexStore
     {
-        public DexFileStore(IConfigurationService configurationService)
+        public DexFileStore(IConfigurationService<IAppConfig> configurationService)
             : base(configurationService, nameof(DexFileStore))
         {
         }
