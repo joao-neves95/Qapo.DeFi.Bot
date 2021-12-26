@@ -150,8 +150,11 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
             TransactionReceipt transactionReceipt = await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
                 new ExecuteFunction()
                 {
-                    // TODO: Calculate gas price.
-                    GasPrice = Nethereum.Web3.Web3.Convert.ToWei(31, UnitConversion.EthUnit.Gwei),
+                    // TODO: Calculate the current gas price.
+                    GasPrice = Web3.Convert.ToWei(
+                        request.AppConfig.BlockchainsConfig.GetDefaultGasByChainId(request.LockedVault.BlockchainId),
+                        UnitConversion.EthUnit.Gwei
+                    ),
                     Gas = executionGasEstimate
                 }
             );
