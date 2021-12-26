@@ -1,0 +1,26 @@
+{
+    "localDataFilesPath": "",
+    "localJsonDbFilesPath": "",
+    "workerMillisecondsDelay": 1000,
+    "secretsConfig": {
+        "walletAddress": "",
+        "walletPrivateKey": ""
+    },
+    "blockchainsConfig": {
+        "polygonRpcEndpoint": "",
+        "polygonChainId": 0,
+        "polygonDefaultGas": 0.0,
+        "polygonMaxGas": 0.0,
+        "fantomRpcEndpoint": "",
+        "fantomChainId": 0,
+        "fantomDefaultGas": 0.0,
+        "fantomMaxGas": 0.0,
+        "bscRpcEndpoint": "",
+        "bscChainId": 0,
+        "bscDefaultGas": 0.0,
+        "bscMaxGas": 0.0
+    },
+    "autoCompounderConfig": {
+        "defaultMinProfitToGasPercentOffset": 0.0
+    }
+}
