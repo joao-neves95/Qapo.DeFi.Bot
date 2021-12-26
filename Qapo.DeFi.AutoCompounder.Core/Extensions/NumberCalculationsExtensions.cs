@@ -1,17 +1,32 @@
+using System;
 using System.Numerics;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Extensions
 {
     public static class NumberCalculationsExtensions
     {
-        public static int IncreasePercentage(this int @num, float percentage)
-        {
-            return @num;
-        }
-
+        /// <summary>
+        /// Adds a percentage to the original number.
+        /// This method floors the final value, like the EVM.
+        ///
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="percentage"> E.g.: 0.1 = 10% </param>
         public static BigInteger IncreasePercentage(this BigInteger @num, float percentage)
         {
-            return @num;
+            return new BigInteger(Math.Floor((decimal)@num + ((decimal)@num * (decimal)percentage)));
+        }
+
+        /// <summary>
+        /// Adds a percentage to the original number.
+        ///
+        /// </summary>
+        /// <param name="num"></param>
+        /// <param name="percentage"> E.g.: 0.1 = 10% </param>
+        /// <returns></returns>
+        public static decimal IncreasePercentage(this decimal @num, float percentage)
+        {
+            return @num + (@num * (decimal)percentage);
         }
     }
 }
