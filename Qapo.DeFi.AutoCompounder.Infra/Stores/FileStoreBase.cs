@@ -7,13 +7,14 @@ using Newtonsoft.Json;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
+using Qapo.DeFi.AutoCompounder.Core.Models.Config;
 using Qapo.DeFi.AutoCompounder.Core.Extensions;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
     public abstract class FileStoreBase<TEntity>
     {
-        protected readonly IConfigurationService<IAppConfig> _configurationService;
+        protected readonly IConfigurationService<AppConfig> _configurationService;
 
         protected readonly IAppConfig _appConfig;
 
@@ -25,7 +26,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
         {
         }
 
-        protected FileStoreBase(IConfigurationService<IAppConfig> configurationService, string dbFileName)
+        protected FileStoreBase(IConfigurationService<AppConfig> configurationService, string dbFileName)
         {
             this._configurationService = configurationService.ThrowIfNull(nameof(configurationService));
             this._appConfig = this._configurationService.GetConfig().GetAwaiter().GetResult();

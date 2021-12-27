@@ -3,16 +3,16 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
+using Qapo.DeFi.AutoCompounder.Core.Models.Config;
 using Qapo.DeFi.AutoCompounder.Core.Models.Data;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 {
     public class LockedVaultsFileStore : FileStoreBase<LockedVault>, ILockedVaultsStore
     {
-        public LockedVaultsFileStore(IConfigurationService<IAppConfig> configurationService)
+        public LockedVaultsFileStore(IConfigurationService<AppConfig> configurationService)
             : base(configurationService, nameof(LockedVaultsFileStore))
         {
         }
