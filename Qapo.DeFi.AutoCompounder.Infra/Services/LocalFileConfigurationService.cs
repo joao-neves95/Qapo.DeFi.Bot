@@ -5,8 +5,6 @@ using System.Threading.Tasks;
 
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
-using Qapo.DeFi.AutoCompounder.Core.Models.Config;
-using Qapo.DeFi.AutoCompounder.Core.Extensions;
 using Qapo.DeFi.AutoCompounder.Infra.Stores;
 
 namespace Qapo.DeFi.AutoCompounder.Infra.Services
@@ -17,7 +15,8 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Services
         public LocalFileConfigurationService()
             : base()
         {
-            this.SetFileDbPath("./", "config");
+            this.SetFileDbPath("./", "appConfig");
+            this.EnsureCreated(string.Empty).GetAwaiter().GetResult();
         }
 
         public async Task<TConfig> GetConfig()

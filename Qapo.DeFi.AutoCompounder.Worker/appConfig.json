@@ -1,6 +1,6 @@
 {
-    "localDataFilesPath": "",
-    "localJsonDbFilesPath": "",
+    "localDataFilesPath": "./_data/dataFiles",
+    "localJsonDbFilesPath": "./_data/localJsonDbFiles",
     "workerMillisecondsDelay": 1000,
     "secretsConfig": {
         "walletAddress": "",

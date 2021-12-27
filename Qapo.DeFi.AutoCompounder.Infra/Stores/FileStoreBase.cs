@@ -40,15 +40,13 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
         {
             this.DbFileName = dbFileName;
             this.FileDbPath = Path.Combine(fileDbPath, $"{dbFileName}.json");
-
-            this.EnsureCreated().GetAwaiter().GetResult();
         }
 
-        protected async Task EnsureCreated()
+        protected async Task EnsureCreated(string initialValue = "[]")
         {
             if (!File.Exists(this.FileDbPath))
             {
-                await File.WriteAllTextAsync(this.FileDbPath, "[]", Encoding.UTF8);
+                await File.WriteAllTextAsync(this.FileDbPath, initialValue, Encoding.UTF8);
             }
         }
 
