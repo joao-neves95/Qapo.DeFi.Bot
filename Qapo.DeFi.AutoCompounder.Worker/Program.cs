@@ -1,3 +1,5 @@
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 
@@ -9,7 +11,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
     {
         private static IContainer container;
 
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             ContainerBuilder containerBuilder = new ContainerBuilder();
             IocConfig.Configure(containerBuilder);
@@ -17,15 +19,12 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
             using (ILifetimeScope scope = Program.container.BeginLifetimeScope())
             {
-                CreateHostBuilder(args).Build().Run();
-            }
-        }
+                CancellationTokenSource cancellationTokenSource = new CancellationTokenSource();
+                Worker worker = scope.Resolve<Worker>();
 
-        public static IHostBuilder CreateHostBuilder(string[] args)
-        {
-            return Host
-                .CreateDefaultBuilder(args)
-                .ConfigureServices((hostContext, services) => services.AddHostedService<Worker>());
+                await worker.StartAsync(cancellationTokenSource.Token);
+                worker.Dispose();
+            }
         }
     }
 }
