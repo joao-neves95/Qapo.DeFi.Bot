@@ -45,10 +45,6 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
             #endregion MediatR
 
-            #region CORE SERVICES
-
-            #endregion CORE SERVICES
-
             #region INFRASTRUCTURE SERVICES
 
             containerBuilder
@@ -97,6 +93,16 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             ;
 
             #endregion INFRASTRUCTURE SERVICES
+
+            #region CORE SERVICES
+
+            #endregion CORE SERVICES
+
+            containerBuilder
+                .RegisterType<Worker>()
+                .AsSelf()
+                .InstancePerLifetimeScope()
+            ;
         }
     }
 }
