@@ -52,6 +52,8 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                         .ThrowIfNull($"{nameof(this._configurationService)}.GetConfig<{nameof(AppConfig)}>()")
                     ;
 
+                    this._logger.LogInformation($"Executing DB storage update");
+
                     await this.HandleDbFileStoresUpdate(appConfig);
 
                     this._logger.LogInformation($"Executing all vaults");
