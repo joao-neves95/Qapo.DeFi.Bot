@@ -55,11 +55,11 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
-            if (request.LockedVault.SecondsOffsetBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
-                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.SecondsOffsetBetweenExecutions)
+            if (request.LockedVault.MinSecondsBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.MinSecondsBetweenExecutions)
             )
             {
-                this._logger.LogInformation("Cancelled (SecondsOffsetBetweenExecutions).");
+                this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.MinSecondsBetweenExecutions)}).");
                 return false;
             }
 
@@ -67,7 +67,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < request.LockedVault.StartTimestamp
             )
             {
-                this._logger.LogInformation("Cancelled (StartTimestamp).");
+                this._logger.LogInformation($"Cancelled ({request.LockedVault.StartTimestamp}).");
                 return false;
             }
 
@@ -84,7 +84,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
                 if (currentBlock < request.LockedVault.StartBlock)
                 {
-                    this._logger.LogInformation("Cancelled (StartBlock).");
+                    this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.StartBlock)}).");
                     return false;
                 }
                 else

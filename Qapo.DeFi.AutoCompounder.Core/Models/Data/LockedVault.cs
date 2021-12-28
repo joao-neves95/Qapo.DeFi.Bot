@@ -37,7 +37,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 
         public float? MinGasPercentOffsetToExecute { get; set; }
 
-        public int? SecondsOffsetBetweenExecutions { get; set; }
+        public int? MinSecondsBetweenExecutions { get; set; }
 
         public long? LastFarmedTimestamp { get; set; }
     }

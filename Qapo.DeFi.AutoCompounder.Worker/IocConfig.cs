@@ -58,7 +58,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                     .MinimumLevel.Information()
                     .WriteTo.Async(config => config.Console())
                     .WriteTo.Async(config => config.File(
-                        "_logs/log_.txt",
+                        "_data/logs/log_.txt",
                         rollingInterval: RollingInterval.Day,
                         rollOnFileSizeLimit: true
                     ))
@@ -77,6 +77,12 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.BlockchainFileStore))
                 .As<IBlockchainStore>()
+                .InstancePerDependency()
+            ;
+
+            containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.TokenFileStore))
+                .As<ITokenStore>()
                 .InstancePerDependency()
             ;
 
