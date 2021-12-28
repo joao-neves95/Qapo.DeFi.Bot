@@ -57,11 +57,11 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             long lastUpdateTimestamp = await this._generalPersistenceStore.GetLastDbUpdateTimestamp();
 
-            if (lastUpdateTimestamp != 0
+            if (lastUpdateTimestamp > 0
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (lastUpdateTimestamp + request.AppConfig.SecondsBetweenDbUpdate)
             )
             {
-                this._loggerService.LogInformation($"Cancelled the DB update ({lastUpdateTimestamp})");
+                this._loggerService.LogInformation($"Cancelled the DB update ({nameof(lastUpdateTimestamp)})");
                 return false;
             }
 
@@ -150,6 +150,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
             IEnumerable<string> lockedVaultToAddIds = allUpdatedLockedVaultIds.Where(updatedVaultId => !allExistingLockedVaultIds.Contains(updatedVaultId));
             IEnumerable<LockedVault> lockedVaultsToAdd = allUpdatedLockedVaults.Where(updatedLockedVault => lockedVaultToAddIds.Contains(updatedLockedVault.VaultAddress));
             await this._lockedVaultsStore.Add(lockedVaultsToAdd);
+
+            await this._generalPersistenceStore.SetLastDbUpdateTimestampToNow();
 
             this._loggerService.LogInformation("");
 

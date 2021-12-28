@@ -2,7 +2,7 @@
     "localDataFilesPath": "./_data/dataFiles",
     "localJsonDbFilesPath": "./_data/localJsonDbFiles",
     "workerMillisecondsDelay": 1000,
-    "secondsBetweenDbUpdate": 5,
+    "secondsBetweenDbUpdate": 300,
     "secretsConfig": {
         "walletAddress": "",
         "walletPrivateKey": ""

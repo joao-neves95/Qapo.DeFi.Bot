@@ -15,7 +15,8 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Services
         public LocalFileConfigurationService()
             : base()
         {
-            this.SetFileDbPath("./", "appConfig");
+            // TODO: Make this path configurable.
+            this.SetFileDbPath("./", "./_data/appConfig");
             this.EnsureCreated(string.Empty).GetAwaiter().GetResult();
         }
 

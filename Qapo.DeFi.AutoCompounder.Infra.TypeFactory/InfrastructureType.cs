@@ -5,6 +5,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.TypeFactory
         LocalFileConfigurationService,
         SerilogLoggerService,
 
+        GeneralPersistenceFileStore,
         BlockchainFileStore,
         DexFileStore,
         TokenFileStore,

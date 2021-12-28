@@ -14,6 +14,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.TypeFactory
                 InfrastructureType.LocalFileConfigurationService => typeof(LocalFileConfigurationService<>),
                 InfrastructureType.SerilogLoggerService => typeof(SerilogLoggerService),
 
+                InfrastructureType.GeneralPersistenceFileStore => typeof(GeneralPersistenceFileStore),
                 InfrastructureType.BlockchainFileStore => typeof(BlockchainFileStore),
                 InfrastructureType.DexFileStore => typeof(DexFileStore),
                 InfrastructureType.TokenFileStore => typeof(TokenFileStore),

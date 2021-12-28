@@ -75,6 +75,13 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             ;
 
             containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.GeneralPersistenceFileStore))
+                .As<IGeneralPersistenceStore>()
+                .InstancePerLifetimeScope()
+                // .InstancePerDependency()
+            ;
+
+            containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.BlockchainFileStore))
                 .As<IBlockchainStore>()
                 .InstancePerDependency()

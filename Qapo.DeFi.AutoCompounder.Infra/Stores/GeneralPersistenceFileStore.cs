@@ -19,7 +19,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
         public async Task<long> GetLastDbUpdateTimestamp()
         {
             GeneralPersistence generalPersistence = await base.GetEntity<GeneralPersistence>();
-            return generalPersistence.LastDbUpdateTimestamp;
+            return generalPersistence?.LastDbUpdateTimestamp ?? -1;
         }
 
         public async Task<long> SetLastDbUpdateTimestampToNow()
@@ -29,7 +29,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
 
         public async Task<long> SetLastDbUpdateTimestamp(long timestamp)
         {
-            GeneralPersistence generalPersistence = await base.GetEntity<GeneralPersistence>();
+            GeneralPersistence generalPersistence = (await base.GetEntity<GeneralPersistence>()) ?? new GeneralPersistence();
             generalPersistence.LastDbUpdateTimestamp = timestamp;
             await base.Save(generalPersistence);
 
