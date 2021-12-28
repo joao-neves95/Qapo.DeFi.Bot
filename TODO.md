@@ -1,19 +1,21 @@
 ## TODO
 
-- Set up the initial strategies mechanic and architecture
-- Set up the Web3 connection
-- Strategies:
+- Testing:
+  - [x]: Infrastructure.
+  - []: Web3 services connection.
+  - []: Smart contract review.
+  - []: Smart contract security review (I.e. is everything locked).
+  - []: Test the smart contracts by hand on-chain/production.
+  - []: Test the entire system in production.
+- Improve the strategies mechanic and architecture
+- Add RabbitMQ
+- Strategies E.g.:
   - Automate app.iron.finance
     - E.g.:
       - 1) Claim ICE from IS3USD LP Iron Farm
       - 2) Sell 20%/30% for a stablecoin
       - 3) Deposit rest of ICE in Iron Lending
   - Automate app.apeswap.finance
-- Improve the strategies mechanic and architecture
-- Create vaults for each strategy for better strategy switching automation
-- Create vaults for each strategy to support external addresses
-- Add multi-chain support
-- Add RabbitMQ
 - Create Docs at gitbook.io
   - E.g.:
     - https://docs.yearn.finance
