@@ -9,11 +9,12 @@ using System.Threading.Tasks;
 using MediatR;
 using Newtonsoft.Json;
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores;
 using Qapo.DeFi.AutoCompounder.Core.Models.Config;
 using Qapo.DeFi.AutoCompounder.Core.Models.Data;
 using Qapo.DeFi.AutoCompounder.Core.Extensions;
-using Qapo.DeFi.AutoCompounder.Core.Interfaces.Services;
 
 namespace Qapo.DeFi.AutoCompounder.Core.Commands
 {
@@ -47,10 +48,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         public async Task<bool> Handle(UpdateLocalDbFromDataFiles request, CancellationToken cancellationToken)
         {
-            // TODO: Create a generic method.
-
             this._loggerService.LogInformation($"Running {nameof(UpdateLocalDbFromDataFilesHandler)}...");
-            this._loggerService.LogInformation($"Updating DB");
+            this._loggerService.LogInformation("Updating DB");
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
@@ -60,15 +59,20 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 BuildDataFilePath(request.AppConfig, nameof(Blockchain))
             );
 
-            await this._blockchainStore.Update(allUpdatedBlockchains.ToArray());
+            await this._blockchainStore.Update(allUpdatedBlockchains);
 
-            int[] allUpdatedBlockchainIds = allUpdatedBlockchains.Select(blockchain => blockchain.ChainId).ToArray();
+            List<int> allUpdatedBlockchainIds = allUpdatedBlockchains.ConvertAll(blockchain => blockchain.ChainId);
 
-            Blockchain[] blockchainsToRemove = (await this._blockchainStore.GetAll())
+            IEnumerable<Blockchain> blockchainsToRemove = (await this._blockchainStore.GetAll())
                 .Where(blockchain => !allUpdatedBlockchainIds.Contains(blockchain.ChainId))
-                .ToArray();
+            ;
 
             await this._blockchainStore.Remove(blockchainsToRemove);
+
+            List<int> allExistingBlockchainIds = (await this._blockchainStore.GetAll()).ConvertAll(chain => chain.ChainId);
+            IEnumerable<int> blockchainToAddIds = allUpdatedBlockchainIds.Where(updatedChainId => !allExistingBlockchainIds.Contains(updatedChainId));
+            IEnumerable<Blockchain> blockchainsToAdd = allUpdatedBlockchains.Where(updatedChain => blockchainToAddIds.Contains(updatedChain.ChainId));
+            await this._blockchainStore.Add(blockchainsToAdd);
 
             this._loggerService.LogInformation($"Updating {nameof(_dexStore)}");
 
@@ -78,13 +82,18 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             await this._dexStore.Update(allUpdatedDexs.ToArray());
 
-            int[] allUpdatedDexIds = allUpdatedDexs.Select(dex => dex.Id).ToArray();
+            List<int> allUpdatedDexIds = allUpdatedDexs.ConvertAll(dex => dex.Id ?? -1);
 
-            Dex[] dexsToRemove = (await this._dexStore.GetAll())
-                .Where(dex => !allUpdatedDexIds.Contains(dex.Id))
-                .ToArray();
+            IEnumerable<Dex> dexsToRemove = (await this._dexStore.GetAll())
+                .Where(dex => !allUpdatedDexIds.Contains(dex.Id ?? -1))
+            ;
 
             await this._dexStore.Remove(dexsToRemove);
+
+            List<int> allExistingDexIds = (await this._dexStore.GetAll()).ConvertAll(dex => dex.Id ?? -1);
+            IEnumerable<int> dexToAddIds = allUpdatedDexIds.Where(updatedDexId => !allExistingDexIds.Contains(updatedDexId));
+            IEnumerable<Dex> dexsToAdd = allUpdatedDexs.Where(updatedDex => dexToAddIds.Contains(updatedDex.Id ?? -1));
+            await this._dexStore.Add(dexsToAdd);
 
             this._loggerService.LogInformation($"Updating {nameof(_tokenStore)}");
 
@@ -92,15 +101,20 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 BuildDataFilePath(request.AppConfig, nameof(Token))
             );
 
-            await this._tokenStore.Update(allUpdatedTokens.ToArray());
+            await this._tokenStore.Update(allUpdatedTokens);
 
-            int[] allUpdatedTokenIds = allUpdatedTokens.Select(token => token.Id).ToArray();
+            List<int> allUpdatedTokenIds = allUpdatedTokens.ConvertAll(token => token.Id ?? -1);
 
-            Token[] tokensToRemove = (await this._tokenStore.GetAll())
-                .Where(token => !allUpdatedTokenIds.Contains(token.Id))
-                .ToArray();
+            IEnumerable<Token> tokensToRemove = (await this._tokenStore.GetAll())
+                .Where(token => !allUpdatedTokenIds.Contains(token.Id ?? -1))
+            ;
 
             await this._tokenStore.Remove(tokensToRemove);
+
+            List<int> allExistingTokenIds = (await this._tokenStore.GetAll()).ConvertAll(token => token.Id ?? -1);
+            IEnumerable<int> tokenToAddIds = allUpdatedTokenIds.Where(updatedTokenId => !allExistingTokenIds.Contains(updatedTokenId));
+            IEnumerable<Token> tokensToAdd = allUpdatedTokens.Where(updatedToken => tokenToAddIds.Contains(updatedToken.Id ?? -1));
+            await this._tokenStore.Add(tokensToAdd);
 
             this._loggerService.LogInformation($"Updating {nameof(_lockedVaultsStore)}");
 
@@ -108,19 +122,61 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 BuildDataFilePath(request.AppConfig, nameof(LockedVault))
             );
 
-            await this._lockedVaultsStore.Update(allUpdatedLockedVaults.ToArray());
+            await this._lockedVaultsStore.Update(allUpdatedLockedVaults);
 
-            string[] allUpdatedLockedVaultIds = allUpdatedLockedVaults.Select(lockedVault => lockedVault.VaultAddress).ToArray();
+            List<string> allUpdatedLockedVaultIds = allUpdatedLockedVaults.ConvertAll(lockedVault => lockedVault.VaultAddress);
 
-            LockedVault[] lockedVaulToRemove = (await this._lockedVaultsStore.GetAll())
+            IEnumerable<LockedVault> lockedVaulToRemove = (await this._lockedVaultsStore.GetAll())
                 .Where(lockedVault => !allUpdatedLockedVaultIds.Contains(lockedVault.VaultAddress))
-                .ToArray();
+            ;
 
             await this._lockedVaultsStore.Remove(lockedVaulToRemove);
+
+            List<string> allExistingLockedVaultIds = (await this._lockedVaultsStore.GetAll()).ConvertAll(lockedVault => lockedVault.VaultAddress);
+            IEnumerable<string> lockedVaultToAddIds = allUpdatedLockedVaultIds.Where(updatedVaultId => !allExistingLockedVaultIds.Contains(updatedVaultId));
+            IEnumerable<LockedVault> lockedVaultsToAdd = allUpdatedLockedVaults.Where(updatedLockedVault => lockedVaultToAddIds.Contains(updatedLockedVault.VaultAddress));
+            await this._lockedVaultsStore.Add(lockedVaultsToAdd);
 
             this._loggerService.LogInformation("");
 
             return true;
+
+            // List<IStore<IEntity>> allStores = new List<IStore<IEntity>>
+            // {
+            //     this._blockchainStore,
+            //     this._dexStore,
+            //     this._tokenStore,
+            //     this._lockedVaultsStore
+            // };
+
+            // for (int i = 0; i < allStores.Count; ++i)
+            // {
+            //     await this.UpdateDb(request, allStores[i]);
+            // }
+        }
+
+        private async Task UpdateDb(UpdateLocalDbFromDataFiles request, IStore<IEntity> store)
+        {
+            throw new NotImplementedException();
+
+            this._loggerService.LogInformation($"Updating {BuildDataFileName(typeof(IEntity).FullName)}");
+
+            List<IEntity> allUpdatedEntities = await UpdateLocalDbFromDataFilesHandler
+                .ReadAllEntitiesToUpdate<IEntity>(
+                    BuildDataFilePath(request.AppConfig, typeof(IEntity).FullName)
+                )
+            ;
+
+            await store.Update(allUpdatedEntities.ToArray());
+
+            int[] allUpdatedEntityIds = allUpdatedEntities.Select(entity => entity.Id ?? -1).ToArray();
+
+            IEntity[] entitiesToRemove = (await store.GetAll())
+                .Where(entity => !allUpdatedEntityIds.Contains(entity.Id ?? -1))
+                .ToArray()
+            ;
+
+            await store.Remove(entitiesToRemove);
         }
 
         private static string BuildDataFilePath(AppConfig appConfig, string entityName)
@@ -130,7 +186,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
         private static string BuildDataFileName(string entityName)
         {
-            return $"{entityName}s";
+            return $"{entityName.ToLower()}s.json";
         }
 
         private static async Task<List<TEntity>> ReadAllEntitiesToUpdate<TEntity>(string filePath)

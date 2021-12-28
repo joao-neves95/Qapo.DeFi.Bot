@@ -11,6 +11,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Config
 
         public int WorkerMillisecondsDelay { get; set; }
 
+        public int SecondsBetweenDbUpdate { get; set; }
+
         public SecretsConfig SecretsConfig { get; set; }
 
         public BlockchainsConfig BlockchainsConfig  { get; set; }
