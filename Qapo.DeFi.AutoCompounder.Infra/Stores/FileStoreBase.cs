@@ -26,14 +26,18 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
         {
         }
 
-        protected FileStoreBase(IConfigurationService<AppConfig> configurationService, string dbFileName)
+        protected FileStoreBase(
+            IConfigurationService<AppConfig> configurationService,
+            string dbFileName,
+            string initialValue = "[]"
+        )
         {
             this._configurationService = configurationService.ThrowIfNull(nameof(configurationService));
             this._appConfig = this._configurationService.GetConfig().GetAwaiter().GetResult();
 
             this.SetFileDbPath(this._appConfig.LocalJsonDbFilesPath, dbFileName);
 
-            this.EnsureCreated().GetAwaiter().GetResult();
+            this.EnsureCreated(initialValue).GetAwaiter().GetResult();
         }
 
         protected void SetFileDbPath(string fileDbPath, string dbFileName)
@@ -50,9 +54,9 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             }
         }
 
-        protected async Task<TEntity> GetEntity()
+        protected async Task<List<TEntity>> GetEntireEntityList()
         {
-            return await this.GetEntity<TEntity>();
+            return await this.GetEntity<List<TEntity>>();
         }
 
         protected async Task<T> GetEntity<T>()
@@ -62,16 +66,14 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return JsonConvert.DeserializeObject<T>(jsonStr);
         }
 
-        protected async Task<List<TEntity>> GetEntireEntityList()
-        {
-            string jsonStr = await File.ReadAllTextAsync(this.FileDbPath);
-
-            return JsonConvert.DeserializeObject<List<TEntity>>(jsonStr);
-        }
-
         protected async Task SaveAll(List<TEntity> entities)
         {
-            await File.WriteAllTextAsync(this.FileDbPath, JsonConvert.SerializeObject(entities, Formatting.None), Encoding.UTF8);
+            await this.Save(entities);
+        }
+
+        protected async Task Save<T>(T entity)
+        {
+            await File.WriteAllTextAsync(this.FileDbPath, JsonConvert.SerializeObject(entity, Formatting.None), Encoding.UTF8);
         }
 
         public async Task<List<TEntity>> GetAll()
