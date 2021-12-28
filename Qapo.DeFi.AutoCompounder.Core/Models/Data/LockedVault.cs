@@ -1,8 +1,18 @@
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
+using Qapo.DeFi.AutoCompounder.Core.Extensions;
+
 namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 {
-    public class LockedVault
+    public class LockedVault : IEntity
     {
+        public int? Id
+        {
+            get { return this.VaultAddress.IntRepresentation(); }
+
+            set { }
+        }
+
         public string VaultAddress { get; set; }
 
         public string Name { get; set; }

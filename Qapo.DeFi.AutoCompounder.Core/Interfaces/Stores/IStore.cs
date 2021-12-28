@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
+
 namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores
 {
     public interface IStore<TEntity>
+        where TEntity : IEntity
     {
         Task<List<TEntity>> GetAll();
 

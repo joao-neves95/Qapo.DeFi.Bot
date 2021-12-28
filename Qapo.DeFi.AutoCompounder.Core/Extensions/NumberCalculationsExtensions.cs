@@ -28,5 +28,17 @@ namespace Qapo.DeFi.AutoCompounder.Core.Extensions
         {
             return @num + (@num * (decimal)percentage);
         }
+
+        public static int Combine(this int @leftNumber, int rightNumber)
+        {
+            int rigthLength = 1;
+
+            while(rigthLength <= rightNumber)
+            {
+                rigthLength *= 10;
+            }
+
+            return (leftNumber * rigthLength) + rightNumber;
+        }
     }
 }

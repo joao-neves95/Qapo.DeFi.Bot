@@ -1,9 +1,11 @@
 
+using Qapo.DeFi.AutoCompounder.Core.Interfaces.Dto;
+
 namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 {
-    public class Dex
+    public class Dex : IEntity
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         public string Name { get; set; }
 
