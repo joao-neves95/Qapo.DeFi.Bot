@@ -10,6 +10,10 @@ namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores
     {
         Task<List<TEntity>> GetAll();
 
+        Task<TEntity> Add(TEntity entity);
+
+        Task<List<TEntity>> Add(IEnumerable<TEntity> entities);
+
         Task<TEntity> Update(TEntity updatedEntity);
 
         Task<List<TEntity>> Update(IEnumerable<TEntity> updatedEntities);

@@ -24,6 +24,33 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return allVaults?.Find(lockedVault => lockedVault.VaultAddress == vaultAddress);
         }
 
+        public async Task<LockedVault> Add(LockedVault entity)
+        {
+            return (await this.Add(new[] { entity }))?[0];
+        }
+
+        public async Task<List<LockedVault>> Add(IEnumerable<LockedVault> entities)
+        {
+            List<LockedVault> allLockedVaults = await base.GetAll();
+
+            for (int i = 0 ; i < entities.Count(); ++i)
+            {
+                LockedVault newLockedVault = entities.ElementAt(i);
+                LockedVault existingLockedVault = allLockedVaults.Find(lockedVault => lockedVault.VaultAddress == newLockedVault.VaultAddress);
+
+                if (existingLockedVault != null)
+                {
+                    continue;
+                }
+
+                allLockedVaults.Add(newLockedVault);
+            }
+
+            await base.SaveAll(allLockedVaults);
+
+            return entities.ToList();
+        }
+
         public async Task<LockedVault> Update(LockedVault updatedLockedVault)
         {
             return (await this.Update(new[] { updatedLockedVault }))?[0];
@@ -93,6 +120,11 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             await base.SaveAll(allVaults);
 
             return true;
+        }
+
+        public Task<bool> RemoveByAddress(string[] vaultAddresses)
+        {
+            throw new NotImplementedException();
         }
     }
 }

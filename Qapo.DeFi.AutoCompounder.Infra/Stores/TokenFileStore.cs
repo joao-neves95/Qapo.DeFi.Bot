@@ -27,7 +27,33 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await GetById(id))?.Address;
         }
 
-        public Task<Token> Update(Token updatedToken)
+        public async Task<Token> Add(Token entity)
+        {
+            return (await this.Add(new[] { entity }))?[0];
+        }
+
+        public async Task<List<Token>> Add(IEnumerable<Token> entities)
+        {
+            List<Token> allTokens = await base.GetAll();
+
+            for (int i = 0; i < entities.Count(); ++i)
+            {
+                Token newToken = entities.ElementAt(i);
+                Token existingToken = allTokens.Find(token => token.Id == newToken.Id);
+
+                if (existingToken != null)
+                {
+                    continue;
+                }
+
+                allTokens.Add(newToken);
+            }
+
+            await base.SaveAll(allTokens);
+
+            return entities.ToList();
+        }
+
         public async Task<Token> Update(Token updatedToken)
         {
             return (await this.Update(new[] { updatedToken }))[0];

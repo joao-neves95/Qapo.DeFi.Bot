@@ -22,6 +22,33 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await base.GetAll())?.Find(dex => dex.Id == id);
         }
 
+        public async Task<Dex> Add(Dex entity)
+        {
+            return (await this.Add(new[] { entity }))?[0];
+        }
+
+        public async Task<List<Dex>> Add(IEnumerable<Dex> entities)
+        {
+            List<Dex> allDexs = await base.GetAll();
+
+            for (int i = 0 ; i < entities.Count(); ++i)
+            {
+                Dex newDex = entities.ElementAt(i);
+                Dex existingDex = allDexs.Find(dex => dex.Id == newDex.Id);
+
+                if (existingDex != null)
+                {
+                    continue;
+                }
+
+                allDexs.Add(newDex);
+            }
+
+            await base.SaveAll(allDexs);
+
+            return entities.ToList();
+        }
+
         public async Task<Dex> Update(Dex updatedDex)
         {
             return (await this.Update(new[] { updatedDex }))?[0];

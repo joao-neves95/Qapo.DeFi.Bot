@@ -27,6 +27,33 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await this.GetByChainId(chainId))?.RpcUrl;
         }
 
+        public async Task<Blockchain> Add(Blockchain entity)
+        {
+            return (await this.Add(new[] { entity }))?[0];
+        }
+
+        public async Task<List<Blockchain>> Add(IEnumerable<Blockchain> entities)
+        {
+            List<Blockchain> allBlockchains = await base.GetAll();
+
+            for (int i = 0 ; i < entities.Count(); ++i)
+            {
+                Blockchain newBlockchain = entities.ElementAt(i);
+                Blockchain existingBlockchain = allBlockchains.Find(blockchain => blockchain.Id == newBlockchain.Id);
+
+                if (existingBlockchain != null)
+                {
+                    continue;
+                }
+
+                allBlockchains.Add(newBlockchain);
+            }
+
+            await base.SaveAll(allBlockchains);
+
+            return entities.ToList();
+        }
+
         public async Task<Blockchain> Update(Blockchain updatedBlockchain)
         {
             return (await this.Update(new[] { updatedBlockchain }))?[0];
