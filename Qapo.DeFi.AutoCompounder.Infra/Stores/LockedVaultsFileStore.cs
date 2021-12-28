@@ -29,7 +29,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await this.Update(new[] { updatedLockedVault }))?[0];
         }
 
-        public async Task<List<LockedVault>> Update(LockedVault[] updatedLockedVaults)
+        public async Task<List<LockedVault>> Update(IEnumerable<LockedVault> updatedLockedVaults)
         {
             List<LockedVault> allVaults = await base.GetAll();
 
@@ -38,18 +38,19 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                 return null;
             }
 
-            for (int i = 0; i < updatedLockedVaults.Length; ++i)
+            for (int i = 0; i < updatedLockedVaults.Count(); ++i)
             {
-                LockedVault updatedLockedVault = updatedLockedVaults[i];
+                LockedVault updatedLockedVault = updatedLockedVaults.ElementAtOrDefault(i);
                 LockedVault vaultToUpdate = allVaults?.Find(vault => vault.VaultAddress == updatedLockedVault.VaultAddress);
 
                 if (vaultToUpdate == null)
                 {
+                    updatedLockedVault.VaultAddress = null;
                     continue;
                 }
 
                 vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVault.MinGasPercentOffsetToExecute;
-                vaultToUpdate.SecondsOffsetBetweenExecutions = updatedLockedVault.SecondsOffsetBetweenExecutions;
+                vaultToUpdate.MinSecondsBetweenExecutions = updatedLockedVault.MinSecondsBetweenExecutions;
                 vaultToUpdate.StartBlock = updatedLockedVault.StartBlock;
                 vaultToUpdate.StartTimestamp = updatedLockedVault.StartTimestamp;
             }
@@ -64,9 +65,9 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return await this.RemoveByAddress(lockedVault.VaultAddress);
         }
 
-        public async Task<bool> Remove(LockedVault[] lockedVaults)
+        public async Task<bool> Remove(IEnumerable<LockedVault> lockedVaults)
         {
-            return await this.RemoveByAddress(lockedVaults.Select(vault => vault.VaultAddress).ToArray());
+            return await this.RemoveByAddress(lockedVaults.Select(vault => vault.VaultAddress));
         }
 
         public async Task<bool> RemoveByAddress(string vaultAddress)
@@ -74,9 +75,9 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return await this.RemoveByAddress(new[] { vaultAddress });
         }
 
-        public async Task<bool> RemoveByAddress(string[] vaultAddresses)
+        public async Task<bool> RemoveByAddress(IEnumerable<string> vaultAddresses)
         {
-            if (vaultAddresses.Length == 0)
+            if (!vaultAddresses.Any())
             {
                 return false;
             }

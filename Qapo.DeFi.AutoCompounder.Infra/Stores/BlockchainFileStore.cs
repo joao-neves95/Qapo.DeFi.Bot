@@ -32,17 +32,18 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await this.Update(new[] { updatedBlockchain }))?[0];
         }
 
-        public async Task<List<Blockchain>> Update(Blockchain[] updatedBlockchains)
+        public async Task<List<Blockchain>> Update(IEnumerable<Blockchain> updatedBlockchains)
         {
             List<Blockchain> allBlockchains = await base.GetAll();
 
-            for (int i = 0; i < updatedBlockchains.Length; ++i)
+            for (int i = 0; i < updatedBlockchains.Count(); ++i)
             {
-                Blockchain updatedBlockchain = updatedBlockchains[i];
+                Blockchain updatedBlockchain = updatedBlockchains.ElementAtOrDefault(i);
                 Blockchain blockchainToUpdate = allBlockchains?.Find(blockchain => blockchain.ChainId == updatedBlockchain.ChainId);
 
                 if (blockchainToUpdate == null)
                 {
+                    updatedBlockchain.ChainId = -1;
                     continue;
                 }
 
@@ -61,9 +62,9 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return await this.Remove(new[] { blockchain });
         }
 
-        public async Task<bool> Remove(Blockchain[] blockchains)
+        public async Task<bool> Remove(IEnumerable<Blockchain> blockchains)
         {
-            if (blockchains.Length == 0)
+            if (!blockchains.Any())
             {
                 return false;
             }

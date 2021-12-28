@@ -28,11 +28,12 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
         }
 
         public Task<Token> Update(Token updatedToken)
+        public async Task<Token> Update(Token updatedToken)
         {
-            throw new NotImplementedException();
+            return (await this.Update(new[] { updatedToken }))[0];
         }
 
-        public async Task<List<Token>> Update(Token[] updatedTokens)
+        public async Task<List<Token>> Update(IEnumerable<Token> updatedTokens)
         {
             List<Token> allTokens = await base.GetAll();
 
@@ -41,13 +42,14 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                 return null;
             }
 
-            for (int i = 0; i < updatedTokens.Length; ++i)
+            for (int i = 0; i < updatedTokens.Count(); ++i)
             {
-                Token updatedToken = updatedTokens[i];
+                Token updatedToken = updatedTokens.ElementAtOrDefault(i);
                 Token tokenToUpdate = allTokens?.Find(token => token.Id == updatedToken.Id);
 
                 if (tokenToUpdate == null)
                 {
+                    updatedToken.Id = -1;
                     continue;
                 }
 
@@ -69,17 +71,17 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return await this.Remove(new[] { token });
         }
 
-        public async Task<bool> Remove(Token[] tokens)
+        public async Task<bool> Remove(IEnumerable<Token> tokens)
         {
-            if (tokens.Length == 0)
+            if (!tokens.Any())
             {
                 return false;
             }
 
             List<Token> allTokens = await base.GetAll();
-            IEnumerable<int> allTokenIds = allTokens.Select(token => token.Id);
+            IEnumerable<int> allTokenIds = allTokens.Select(token => token.Id ?? -1);
 
-            allTokens.RemoveAll(token => allTokenIds.Contains(token.Id));
+            allTokens.RemoveAll(token => allTokenIds.Contains(token.Id ?? -1));
             await base.SaveAll(allTokens);
 
             return true;

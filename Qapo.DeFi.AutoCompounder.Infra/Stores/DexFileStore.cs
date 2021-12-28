@@ -27,7 +27,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await this.Update(new[] { updatedDex }))?[0];
         }
 
-        public async Task<List<Dex>> Update(Dex[] updatedDexs)
+        public async Task<List<Dex>> Update(IEnumerable<Dex> updatedDexs)
         {
             List<Dex> allDexs = await base.GetAll();
 
@@ -36,13 +36,14 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                 return null;
             }
 
-            for (int i = 0; i < updatedDexs.Length; ++i)
+            for (int i = 0; i < updatedDexs.Count(); ++i)
             {
-                Dex updatedDex = updatedDexs[i];
+                Dex updatedDex = updatedDexs.ElementAtOrDefault(i);
                 Dex dexToUpdate = allDexs?.Find(dex => dex.Id == updatedDex.Id);
 
                 if (dexToUpdate == null)
                 {
+                    updatedDex.Id = -1;
                     continue;
                 }
 
@@ -62,17 +63,17 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return await this.Remove(new[] { dex });
         }
 
-        public async Task<bool> Remove(Dex[] dex)
+        public async Task<bool> Remove(IEnumerable<Dex> dex)
         {
-            if (dex.Length == 0)
+            if (!dex.Any())
             {
                 return false;
             }
 
             List<Dex> allDexs = await base.GetAll();
-            IEnumerable<int> allDexIds = allDexs.Select(dex => dex.Id);
+            IEnumerable<int> allDexIds = allDexs.Select(dex => dex.Id ?? -1);
 
-            allDexs.RemoveAll(dex => allDexIds.Contains(dex.Id));
+            allDexs.RemoveAll(dex => allDexIds.Contains(dex.Id ?? -1));
             await base.SaveAll(allDexs);
 
             return true;

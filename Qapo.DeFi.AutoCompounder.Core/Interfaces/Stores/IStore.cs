@@ -12,10 +12,10 @@ namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores
 
         Task<TEntity> Update(TEntity updatedEntity);
 
-        Task<List<TEntity>> Update(TEntity[] updatedEntities);
+        Task<List<TEntity>> Update(IEnumerable<TEntity> updatedEntities);
 
         Task<bool> Remove(TEntity updatedEntities);
 
-        Task<bool> Remove(TEntity[] updatedEntities);
+        Task<bool> Remove(IEnumerable<TEntity> updatedEntities);
     }
 }

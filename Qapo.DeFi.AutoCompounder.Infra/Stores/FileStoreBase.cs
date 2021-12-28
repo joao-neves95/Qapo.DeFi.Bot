@@ -69,9 +69,9 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return JsonConvert.DeserializeObject<List<TEntity>>(jsonStr);
         }
 
-        protected async Task SaveAll(List<TEntity> lockedVaults)
+        protected async Task SaveAll(List<TEntity> entities)
         {
-            await File.WriteAllTextAsync(this.FileDbPath, JsonConvert.SerializeObject(lockedVaults, Formatting.None), Encoding.UTF8);
+            await File.WriteAllTextAsync(this.FileDbPath, JsonConvert.SerializeObject(entities, Formatting.None), Encoding.UTF8);
         }
 
         public async Task<List<TEntity>> GetAll()
