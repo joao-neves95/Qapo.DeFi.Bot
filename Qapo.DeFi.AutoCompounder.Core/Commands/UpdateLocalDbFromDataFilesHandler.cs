@@ -20,6 +20,8 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 {
     public class UpdateLocalDbFromDataFilesHandler : IRequestHandler<UpdateLocalDbFromDataFiles, bool>
     {
+        private readonly IGeneralPersistenceStore _generalPersistenceStore;
+
         private readonly IBlockchainStore _blockchainStore;
 
         private readonly IDexStore _dexStore;
@@ -31,6 +33,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
         private readonly ILoggerService _loggerService;
 
         public UpdateLocalDbFromDataFilesHandler(
+            IGeneralPersistenceStore generalPersistenceStore,
             IBlockchainStore blockchainStore,
             IDexStore dexStore,
             ITokenStore tokenStore,
@@ -38,6 +41,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
             ILoggerService loggerService
         )
         {
+            this._generalPersistenceStore = generalPersistenceStore.ThrowIfNull(nameof(IGeneralPersistenceStore));
             this._blockchainStore = blockchainStore.ThrowIfNull(nameof(IBlockchainStore));
             this._dexStore = dexStore.ThrowIfNull(nameof(IDexStore));
             this._tokenStore = tokenStore.ThrowIfNull(nameof(ITokenStore));
@@ -50,6 +54,16 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
         {
             this._loggerService.LogInformation($"Running {nameof(UpdateLocalDbFromDataFilesHandler)}...");
             this._loggerService.LogInformation("Updating DB");
+
+            long lastUpdateTimestamp = await this._generalPersistenceStore.GetLastDbUpdateTimestamp();
+
+            if (lastUpdateTimestamp != 0
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (lastUpdateTimestamp + request.AppConfig.SecondsBetweenDbUpdate)
+            )
+            {
+                this._loggerService.LogInformation($"Cancelled the DB update ({lastUpdateTimestamp})");
+                return false;
+            }
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
