@@ -84,25 +84,29 @@ namespace Qapo.DeFi.AutoCompounder.Worker
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.BlockchainFileStore))
                 .As<IBlockchainStore>()
-                .InstancePerDependency()
+                .InstancePerLifetimeScope()
+                // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.TokenFileStore))
                 .As<ITokenStore>()
-                .InstancePerDependency()
+                .InstancePerLifetimeScope()
+                // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.DexFileStore))
                 .As<IDexStore>()
-                .InstancePerDependency()
+                .InstancePerLifetimeScope()
+                // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.LockedVaultsFileStore))
                 .As<ILockedVaultsStore>()
-                .InstancePerDependency()
+                .InstancePerLifetimeScope()
+                // .InstancePerDependency()
             ;
 
             #endregion INFRASTRUCTURE SERVICES
