@@ -93,7 +93,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                     }
                 );
             }
-            catch (System.Exception e)
+            catch (Exception e)
             {
                 this._logger.LogError(
                     e,
@@ -118,7 +118,7 @@ namespace Qapo.DeFi.AutoCompounder.Worker
                         }
                     );
                 }
-                catch (System.Exception e)
+                catch (Exception e)
                 {
                     this._logger.LogError(
                         e,
