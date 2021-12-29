@@ -76,6 +76,14 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                     continue;
                 }
 
+                vaultToUpdate.LockedStratServiceType = updatedLockedVault.LockedStratServiceType;
+                vaultToUpdate.Name = updatedLockedVault.Name;
+                vaultToUpdate.BlockchainId = updatedLockedVault.BlockchainId;
+                vaultToUpdate.NativeAssetId = updatedLockedVault.NativeAssetId;
+                vaultToUpdate.UnderlyingAssetAddress = updatedLockedVault.UnderlyingAssetAddress;
+                vaultToUpdate.RewardAssetAddress = updatedLockedVault.RewardAssetAddress;
+                vaultToUpdate.DexId = updatedLockedVault.DexId;
+                vaultToUpdate.PoolId = updatedLockedVault.PoolId;
                 vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVault.MinGasPercentOffsetToExecute;
                 vaultToUpdate.MinSecondsBetweenExecutions = updatedLockedVault.MinSecondsBetweenExecutions;
                 vaultToUpdate.StartBlock = updatedLockedVault.StartBlock;
