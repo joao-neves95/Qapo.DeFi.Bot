@@ -60,9 +60,9 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
                     await this.HandleDbFileStoresUpdate(appConfig);
 
-                    this._logger.LogInformation($"Executing all vaults");
+                    // this._logger.LogInformation($"Executing all vaults");
 
-                    await this.HandleVaultsExecution(appConfig);
+                    // await this.HandleVaultsExecution(appConfig);
 
                     this._logger.LogInformation($"------  End, sleeping. ------");
                     this._logger.LogInformation($"");
@@ -84,26 +84,47 @@ namespace Qapo.DeFi.AutoCompounder.Worker
 
         private async Task HandleDbFileStoresUpdate(AppConfig appConfig)
         {
-            await this._mediator.Send(
-                new UpdateLocalDbFromDataFiles()
-                {
-                    AppConfig = appConfig
-                }
-            );
+            try
+            {
+                await this._mediator.Send(
+                    new UpdateLocalDbFromDataFiles()
+                    {
+                        AppConfig = appConfig
+                    }
+                );
+            }
+            catch (System.Exception e)
+            {
+                this._logger.LogError(
+                    e,
+                    $"ERROR - [{nameof(Worker)}.{nameof(HandleDbFileStoresUpdate)}], while updating DBs"
+                );
+            }
         }
 
         private async Task HandleVaultsExecution(AppConfig appConfig)
         {
             List<LockedVault> lockedVaults = await this._lockedVaultsStore.GetAll();
 
-            for (int i = 0; i < lockedVaults.Count; ++i) {
-                await this._mediator.Send(
-                    new AutoCompoundStrategy()
-                    {
-                        AppConfig = appConfig,
-                        LockedVault = lockedVaults[i]
-                    }
-                );
+            for (int i = 0; i < lockedVaults.Count; ++i)
+            {
+                try
+                {
+                    await this._mediator.Send(
+                        new AutoCompoundStrategy()
+                        {
+                            AppConfig = appConfig,
+                            LockedVault = lockedVaults[i]
+                        }
+                    );
+                }
+                catch (System.Exception e)
+                {
+                    this._logger.LogError(
+                        e,
+                        $"ERROR - [{nameof(Worker)}.{nameof(HandleVaultsExecution)}], while strategy execution"
+                    );
+                }
             }
         }
 
