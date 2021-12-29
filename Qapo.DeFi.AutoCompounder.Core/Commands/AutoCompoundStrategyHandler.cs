@@ -55,42 +55,14 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
-            if (request.LockedVault.MinSecondsBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
-                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.MinSecondsBetweenExecutions)
-            )
-            {
-                this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.MinSecondsBetweenExecutions)}).");
-                return false;
-            }
-
-            if (request.LockedVault.StartTimestamp != null
-                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < request.LockedVault.StartTimestamp
-            )
-            {
-                this._logger.LogInformation($"Cancelled ({request.LockedVault.StartTimestamp}).");
-                return false;
-            }
-
-            Account account = new Account(request.AppConfig.SecretsConfig.WalletPrivateKey);
-
             Web3 web3 = new Web3(
-                account,
+                new Account(request.AppConfig.SecretsConfig.WalletPrivateKey, request.LockedVault.BlockchainId),
                 await this._blockchainStore.GetRpcUrlByChainId(request.LockedVault.BlockchainId)
             );
 
-            if (request.LockedVault.StartBlock != null)
+            if (await this.IsToCancelExecution(request, web3))
             {
-                BigInteger currentBlock = (await web3.Eth.Blocks.GetBlockNumber.SendRequestAsync()).Value;
-
-                if (currentBlock < request.LockedVault.StartBlock)
-                {
-                    this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.StartBlock)}).");
-                    return false;
-                }
-                else
-                {
-                    request.LockedVault.StartBlock = null;
-                }
+                return false;
             }
 
             ILockedStratService currentStratServiceHandler = LockedStratServicesFactory.Get(
@@ -179,9 +151,47 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             await this._lockedVaultsStore.Update(request.LockedVault);
 
+            request = null;
+
             this._logger.LogInformation("");
 
             return true;
+        }
+
+        private async Task<bool> IsToCancelExecution(AutoCompoundStrategy request, Web3 web3Client)
+        {
+            if (request.LockedVault.MinSecondsBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.MinSecondsBetweenExecutions)
+            )
+            {
+                this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.MinSecondsBetweenExecutions)}).");
+                return true;
+            }
+
+            if (request.LockedVault.StartTimestamp != null
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < request.LockedVault.StartTimestamp
+            )
+            {
+                this._logger.LogInformation($"Cancelled ({request.LockedVault.StartTimestamp}).");
+                return true;
+            }
+
+            if (request.LockedVault.StartBlock != null)
+            {
+                BigInteger currentBlock = (await web3Client.Eth.Blocks.GetBlockNumber.SendRequestAsync()).Value;
+
+                if (currentBlock < request.LockedVault.StartBlock)
+                {
+                    this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.StartBlock)}).");
+                    return false;
+                }
+                else
+                {
+                    request.LockedVault.StartBlock = null;
+                }
+            }
+
+            return false;
         }
     }
 }
