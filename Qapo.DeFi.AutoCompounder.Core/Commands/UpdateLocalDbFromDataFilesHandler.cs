@@ -73,9 +73,14 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 BuildDataFilePath(request.AppConfig, nameof(Blockchain))
             );
 
-            await this._blockchainStore.Update(allUpdatedBlockchains);
-
             List<int> allUpdatedBlockchainIds = allUpdatedBlockchains.ConvertAll(blockchain => blockchain.ChainId);
+
+            List<int> allExistingBlockchainIds = (await this._blockchainStore.GetAll()).ConvertAll(chain => chain.ChainId);
+            IEnumerable<int> blockchainToAddIds = allUpdatedBlockchainIds.Where(updatedChainId => !allExistingBlockchainIds.Contains(updatedChainId));
+            IEnumerable<Blockchain> blockchainsToAdd = allUpdatedBlockchains.Where(updatedChain => blockchainToAddIds.Contains(updatedChain.ChainId));
+            await this._blockchainStore.Add(blockchainsToAdd);
+
+            await this._blockchainStore.Update(allUpdatedBlockchains);
 
             IEnumerable<Blockchain> blockchainsToRemove = (await this._blockchainStore.GetAll())
                 .Where(blockchain => !allUpdatedBlockchainIds.Contains(blockchain.ChainId))
@@ -83,20 +88,20 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             await this._blockchainStore.Remove(blockchainsToRemove);
 
-            List<int> allExistingBlockchainIds = (await this._blockchainStore.GetAll()).ConvertAll(chain => chain.ChainId);
-            IEnumerable<int> blockchainToAddIds = allUpdatedBlockchainIds.Where(updatedChainId => !allExistingBlockchainIds.Contains(updatedChainId));
-            IEnumerable<Blockchain> blockchainsToAdd = allUpdatedBlockchains.Where(updatedChain => blockchainToAddIds.Contains(updatedChain.ChainId));
-            await this._blockchainStore.Add(blockchainsToAdd);
-
             this._loggerService.LogInformation($"Updating {nameof(_dexStore)}");
 
             List<Dex> allUpdatedDexs = await ReadAllEntitiesToUpdate<Dex>(
                 BuildDataFilePath(request.AppConfig, nameof(Dex))
             );
 
-            await this._dexStore.Update(allUpdatedDexs.ToArray());
-
             List<int> allUpdatedDexIds = allUpdatedDexs.ConvertAll(dex => dex.Id ?? -1);
+
+            List<int> allExistingDexIds = (await this._dexStore.GetAll()).ConvertAll(dex => dex.Id ?? -1);
+            IEnumerable<int> dexToAddIds = allUpdatedDexIds.Where(updatedDexId => !allExistingDexIds.Contains(updatedDexId));
+            IEnumerable<Dex> dexsToAdd = allUpdatedDexs.Where(updatedDex => dexToAddIds.Contains(updatedDex.Id ?? -1));
+            await this._dexStore.Add(dexsToAdd);
+
+            await this._dexStore.Update(allUpdatedDexs);
 
             IEnumerable<Dex> dexsToRemove = (await this._dexStore.GetAll())
                 .Where(dex => !allUpdatedDexIds.Contains(dex.Id ?? -1))
@@ -104,20 +109,20 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             await this._dexStore.Remove(dexsToRemove);
 
-            List<int> allExistingDexIds = (await this._dexStore.GetAll()).ConvertAll(dex => dex.Id ?? -1);
-            IEnumerable<int> dexToAddIds = allUpdatedDexIds.Where(updatedDexId => !allExistingDexIds.Contains(updatedDexId));
-            IEnumerable<Dex> dexsToAdd = allUpdatedDexs.Where(updatedDex => dexToAddIds.Contains(updatedDex.Id ?? -1));
-            await this._dexStore.Add(dexsToAdd);
-
             this._loggerService.LogInformation($"Updating {nameof(_tokenStore)}");
 
             List<Token> allUpdatedTokens = await ReadAllEntitiesToUpdate<Token>(
                 BuildDataFilePath(request.AppConfig, nameof(Token))
             );
 
-            await this._tokenStore.Update(allUpdatedTokens);
-
             List<int> allUpdatedTokenIds = allUpdatedTokens.ConvertAll(token => token.Id ?? -1);
+
+            List<int> allExistingTokenIds = (await this._tokenStore.GetAll()).ConvertAll(token => token.Id ?? -1);
+            IEnumerable<int> tokenToAddIds = allUpdatedTokenIds.Where(updatedTokenId => !allExistingTokenIds.Contains(updatedTokenId));
+            IEnumerable<Token> tokensToAdd = allUpdatedTokens.Where(updatedToken => tokenToAddIds.Contains(updatedToken.Id ?? -1));
+            await this._tokenStore.Add(tokensToAdd);
+
+            await this._tokenStore.Update(allUpdatedTokens);
 
             IEnumerable<Token> tokensToRemove = (await this._tokenStore.GetAll())
                 .Where(token => !allUpdatedTokenIds.Contains(token.Id ?? -1))
@@ -125,31 +130,26 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             await this._tokenStore.Remove(tokensToRemove);
 
-            List<int> allExistingTokenIds = (await this._tokenStore.GetAll()).ConvertAll(token => token.Id ?? -1);
-            IEnumerable<int> tokenToAddIds = allUpdatedTokenIds.Where(updatedTokenId => !allExistingTokenIds.Contains(updatedTokenId));
-            IEnumerable<Token> tokensToAdd = allUpdatedTokens.Where(updatedToken => tokenToAddIds.Contains(updatedToken.Id ?? -1));
-            await this._tokenStore.Add(tokensToAdd);
-
             this._loggerService.LogInformation($"Updating {nameof(_lockedVaultsStore)}");
 
             List<LockedVault> allUpdatedLockedVaults = await ReadAllEntitiesToUpdate<LockedVault>(
                 BuildDataFilePath(request.AppConfig, nameof(LockedVault))
             );
 
-            await this._lockedVaultsStore.Update(allUpdatedLockedVaults);
-
             List<string> allUpdatedLockedVaultIds = allUpdatedLockedVaults.ConvertAll(lockedVault => lockedVault.VaultAddress);
+
+            List<string> allExistingLockedVaultIds = (await this._lockedVaultsStore.GetAll()).ConvertAll(lockedVault => lockedVault.VaultAddress);
+            IEnumerable<string> lockedVaultToAddIds = allUpdatedLockedVaultIds.Where(updatedVaultId => !allExistingLockedVaultIds.Contains(updatedVaultId));
+            IEnumerable<LockedVault> lockedVaultsToAdd = allUpdatedLockedVaults.Where(updatedLockedVault => lockedVaultToAddIds.Contains(updatedLockedVault.VaultAddress));
+            await this._lockedVaultsStore.Add(lockedVaultsToAdd);
+
+            await this._lockedVaultsStore.Update(allUpdatedLockedVaults);
 
             IEnumerable<LockedVault> lockedVaulToRemove = (await this._lockedVaultsStore.GetAll())
                 .Where(lockedVault => !allUpdatedLockedVaultIds.Contains(lockedVault.VaultAddress))
             ;
 
             await this._lockedVaultsStore.Remove(lockedVaulToRemove);
-
-            List<string> allExistingLockedVaultIds = (await this._lockedVaultsStore.GetAll()).ConvertAll(lockedVault => lockedVault.VaultAddress);
-            IEnumerable<string> lockedVaultToAddIds = allUpdatedLockedVaultIds.Where(updatedVaultId => !allExistingLockedVaultIds.Contains(updatedVaultId));
-            IEnumerable<LockedVault> lockedVaultsToAdd = allUpdatedLockedVaults.Where(updatedLockedVault => lockedVaultToAddIds.Contains(updatedLockedVault.VaultAddress));
-            await this._lockedVaultsStore.Add(lockedVaultsToAdd);
 
             await this._generalPersistenceStore.SetLastDbUpdateTimestampToNow();
 
