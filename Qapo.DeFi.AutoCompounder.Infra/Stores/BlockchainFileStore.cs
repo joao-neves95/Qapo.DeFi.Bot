@@ -27,6 +27,11 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
             return (await this.GetByChainId(chainId))?.RpcUrl;
         }
 
+        public async Task<int> GetNativeAssetIdByChainId(int chainId)
+        {
+            return (await this.GetByChainId(chainId))?.NativeAssetId ?? -1;
+        }
+
         public async Task<Blockchain> Add(Blockchain entity)
         {
             return (await this.Add(new[] { entity }))?[0];
@@ -77,6 +82,7 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                 blockchainToUpdate.ChainId = updatedBlockchain.ChainId;
                 blockchainToUpdate.Name = updatedBlockchain.Name;
                 blockchainToUpdate.RpcUrl = updatedBlockchain.RpcUrl;
+                blockchainToUpdate.NativeAssetId = updatedBlockchain.NativeAssetId;
             }
 
             await base.SaveAll(allBlockchains);

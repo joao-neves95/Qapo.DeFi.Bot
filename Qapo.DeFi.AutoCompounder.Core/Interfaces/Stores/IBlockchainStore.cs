@@ -10,5 +10,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Interfaces.Stores
         Task<Blockchain> GetByChainId(int chainId);
 
         Task<string> GetRpcUrlByChainId(int chainId);
+
+        Task<int> GetNativeAssetIdByChainId(int chainId);
     }
 }

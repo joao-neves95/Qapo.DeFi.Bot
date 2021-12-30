@@ -79,7 +79,6 @@ namespace Qapo.DeFi.AutoCompounder.Infra.Stores
                 vaultToUpdate.LockedStratServiceType = updatedLockedVault.LockedStratServiceType;
                 vaultToUpdate.Name = updatedLockedVault.Name;
                 vaultToUpdate.BlockchainId = updatedLockedVault.BlockchainId;
-                vaultToUpdate.NativeAssetId = updatedLockedVault.NativeAssetId;
                 vaultToUpdate.UnderlyingAssetAddress = updatedLockedVault.UnderlyingAssetAddress;
                 vaultToUpdate.RewardAssetAddress = updatedLockedVault.RewardAssetAddress;
                 vaultToUpdate.DexId = updatedLockedVault.DexId;

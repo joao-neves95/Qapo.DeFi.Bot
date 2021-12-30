@@ -25,8 +25,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 
         public int BlockchainId { get; set; }
 
-        public int NativeAssetId { get; set; }
-
         public int DexId { get; set; }
 
         public string LockedStratServiceType { get; set; }

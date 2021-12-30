@@ -14,8 +14,10 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Data
 
         public int ChainId { get; set; }
 
+        public string Name { get; set; }
+
         public string RpcUrl { get; set; }
 
-        public string Name { get; set; }
+        public int NativeAssetId { get; set; }
     }
 }

@@ -71,11 +71,13 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
                 return false;
             }
 
+            Blockchain currentBlockchain = await this._blockchainStore.GetByChainId(request.LockedVault.BlockchainId);
+
             Account account = new Account(request.AppConfig.SecretsConfig.WalletPrivateKey);
 
             Web3 web3 = new Web3(
                 account,
-                await this._blockchainStore.GetRpcUrlByChainId(request.LockedVault.BlockchainId)
+                currentBlockchain.RpcUrl
             );
 
             if (request.LockedVault.StartBlock != null)
@@ -113,7 +115,7 @@ namespace Qapo.DeFi.AutoCompounder.Core.Commands
 
             this._logger.LogInformation($"Pending reward amount: {pendingRewardAmount}");
 
-            string nativeTokenAddress = await this._tokenStore.GetAddressById(request.LockedVault.NativeAssetId);
+            string nativeTokenAddress = await this._tokenStore.GetAddressById(currentBlockchain.NativeAssetId);
 
             BigInteger pendingRewardValueInGas = (await uniswapV2RouterServiceHandler.GetAmountsOutQueryAsync(
                 new GetAmountsOutFunction()
