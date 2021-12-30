@@ -537,8 +537,6 @@ namespace Qapo.DeFi.AutoCompounder.Core.Models.Web3.External
         public virtual BigInteger AmountETH { get; set; }
     }
 
-
-
     public partial class RemoveLiquidityWithPermitOutputDTO : RemoveLiquidityWithPermitOutputDTOBase { }
 
     [FunctionOutput]

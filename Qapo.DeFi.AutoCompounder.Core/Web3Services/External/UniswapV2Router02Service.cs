@@ -9,15 +9,15 @@ using Nethereum.Contracts.ContractHandlers;
 using Qapo.DeFi.AutoCompounder.Core.Interfaces.Web3Services.External;
 using Qapo.DeFi.AutoCompounder.Core.Models.Web3.External;
 
-namespace Qapo.DeFi.AutoCompounder.Core.Web3Services.External.SpookySwapV2RouterService
+namespace Qapo.DeFi.AutoCompounder.Core.Web3Services.External
 {
-    public partial class SpookySwapV2RouterService : IUniswapV2RouterService
+    public class UniswapV2RouterService : IUniswapV2RouterService
     {
         protected Nethereum.Web3.Web3 Web3{ get; }
 
         public ContractHandler ContractHandler { get; }
 
-        public SpookySwapV2RouterService(Nethereum.Web3.Web3 web3, string contractAddress)
+        public UniswapV2RouterService(Nethereum.Web3.Web3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
