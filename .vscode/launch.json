@@ -10,9 +10,9 @@
             "request": "launch",
             "preLaunchTask": "build",
             // If you have changed target frameworks, make sure to update the program path.
-            "program": "${workspaceFolder}/Qapo.DeFi.AutoCompounder.Worker/bin/Debug/net5.0/Qapo.DeFi.AutoCompounder.Worker.dll",
+            "program": "${workspaceFolder}/Qapo.DeFi.Bot.Worker/bin/Debug/net5.0/Qapo.DeFi.Bot.Worker.dll",
             "args": [],
-            "cwd": "${workspaceFolder}/Qapo.DeFi.AutoCompounder.Worker",
+            "cwd": "${workspaceFolder}/Qapo.DeFi.Bot.Worker",
             // For more information about the 'console' field, see https://aka.ms/VSCode-CS-LaunchJson-Console
             "console": "internalConsole",
             "stopAtEntry": false

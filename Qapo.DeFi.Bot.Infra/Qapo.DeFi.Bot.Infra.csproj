@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<TargetFramework>net6.0</TargetFramework>
+	</PropertyGroup>
+	<ItemGroup>
+		<ProjectReference Include="..\Qapo.DeFi.Bot.Core\Qapo.DeFi.Bot.Core.csproj"/>
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Serilog" Version="2.10.0"/>
+		<PackageReference Include="Nethereum.Web3" Version="4.1.1"/>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.1"/>
+	</ItemGroup>
+</Project>
