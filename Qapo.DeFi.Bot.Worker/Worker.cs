@@ -64,10 +64,10 @@ namespace Qapo.DeFi.Bot.Worker
 
                     await this.HandleVaultsExecution(appConfig);
 
+                    await Task.Delay(appConfig.WorkerMillisecondsDelay, stoppingToken).ConfigureAwait(false);
+
                     this._logger.LogInformation($"------  End, sleeping. ------");
                     this._logger.LogInformation($"");
-
-                    await Task.Delay(appConfig.WorkerMillisecondsDelay, stoppingToken).ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -100,6 +100,8 @@ namespace Qapo.DeFi.Bot.Worker
                     $"ERROR - [{nameof(Worker)}.{nameof(HandleDbFileStoresUpdate)}], while updating DBs"
                 );
             }
+
+            this._logger.LogInformation($"");
         }
 
         private async Task HandleVaultsExecution(AppConfig appConfig)
@@ -125,6 +127,8 @@ namespace Qapo.DeFi.Bot.Worker
                         $"ERROR - [{nameof(Worker)}.{nameof(HandleVaultsExecution)}], while strategy execution"
                     );
                 }
+
+                this._logger.LogInformation($"");
             }
         }
 
