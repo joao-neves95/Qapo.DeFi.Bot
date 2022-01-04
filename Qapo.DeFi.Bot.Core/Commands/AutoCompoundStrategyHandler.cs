@@ -73,6 +73,14 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 request.LockedVault.VaultAddress
             );
 
+            this._logger.LogInformation("Calculating if pending reward amount is profitable for strategy execution.");
+
+            BigInteger pendingRewardAmount = await currentStratServiceHandler.GetPendingRewardAmountQueryAsync();
+            // BigInteger pendingRewardAmount = 1314855264749854181;
+
+            this._logger.LogInformation($"Pending reward amount in wei: {pendingRewardAmount}");
+            this._logger.LogInformation($"Pending reward amount decimal: {Web3.Convert.FromWei(pendingRewardAmount)}");
+
             Dex dex = ( await this._dexStore.GetById(request.LockedVault.DexId) ).ThrowIfNull("_dexStore.GetById");
 
             IUniswapV2RouterService uniswapV2RouterServiceHandler = UniswapV2RouterServicesFactory.Get(
@@ -80,12 +88,6 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 web3,
                 dex.UniswapV2RouterAddress
             );
-
-            this._logger.LogInformation("Calculating if pending reward amount is profitable for strategy execution.");
-
-            BigInteger pendingRewardAmount = await currentStratServiceHandler.GetPendingRewardAmountQueryAsync();
-
-            this._logger.LogInformation($"Pending reward amount: {pendingRewardAmount}");
 
             BigInteger pendingRewardValueInGas = (await uniswapV2RouterServiceHandler.GetAmountsOutQueryAsync(
                 new GetAmountsOutFunction()
@@ -97,13 +99,16 @@ namespace Qapo.DeFi.Bot.Core.Commands
                         await this._tokenStore.GetAddressById(currentBlockchain.NativeTokenId)
                     }
                 }
-            ))[2];
+            ))[1];
 
-            this._logger.LogInformation($"Pending reward value in gas: {pendingRewardValueInGas}");
+            this._logger.LogInformation($"Pending reward value in gas wei (native token): {pendingRewardValueInGas}");
+            this._logger.LogInformation($"Pending reward value in gas decimal (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
+
+            // .swapExactTokensForTokensSupportingFeeOnTransferTokens()
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
 
-            this._logger.LogInformation($"Execution gas estimate: {pendingRewardValueInGas}");
+            this._logger.LogInformation($"Execution gas estimate: {executionGasEstimate}");
 
             if ((
                 request.LockedVault.MinGasPercentOffsetToExecute != null
