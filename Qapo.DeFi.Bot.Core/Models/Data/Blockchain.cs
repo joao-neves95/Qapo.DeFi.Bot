@@ -18,6 +18,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Data
 
         public string RpcUrl { get; set; }
 
-        public int NativeAssetId { get; set; }
+        public int NativeTokenId { get; set; }
     }
 }

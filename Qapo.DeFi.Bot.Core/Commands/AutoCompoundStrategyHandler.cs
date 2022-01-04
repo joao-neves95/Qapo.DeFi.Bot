@@ -94,7 +94,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
                     Path = new List<string>()
                     {
                         request.LockedVault.RewardAssetAddress,
-                        await this._tokenStore.GetAddressById(currentBlockchain.NativeAssetId)
+                        await this._tokenStore.GetAddressById(currentBlockchain.NativeTokenId)
                     }
                 }
             ))[2];

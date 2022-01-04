@@ -29,7 +29,7 @@ namespace Qapo.DeFi.Bot.Infra.Stores
 
         public async Task<int> GetNativeAssetIdByChainId(int chainId)
         {
-            return (await this.GetByChainId(chainId))?.NativeAssetId ?? -1;
+            return (await this.GetByChainId(chainId))?.NativeTokenId ?? -1;
         }
 
         public async Task<Blockchain> Add(Blockchain entity)
@@ -82,7 +82,7 @@ namespace Qapo.DeFi.Bot.Infra.Stores
                 blockchainToUpdate.ChainId = updatedBlockchain.ChainId;
                 blockchainToUpdate.Name = updatedBlockchain.Name;
                 blockchainToUpdate.RpcUrl = updatedBlockchain.RpcUrl;
-                blockchainToUpdate.NativeAssetId = updatedBlockchain.NativeAssetId;
+                blockchainToUpdate.NativeTokenId = updatedBlockchain.NativeTokenId;
             }
 
             await base.SaveAll(allBlockchains);
