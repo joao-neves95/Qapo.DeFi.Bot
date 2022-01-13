@@ -5,6 +5,13 @@ using Nethereum.ABI.FunctionEncoding.Attributes;
 
 namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
 {
+    public partial class DeployFunction : DeployFunctionBase { }
+
+    [Function("deploy")]
+    public class DeployFunctionBase : FunctionMessage
+    {
+    }
+
     public partial class DepositFunction : DepositFunctionBase { }
 
     [Function("deposit")]
@@ -19,7 +26,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("depositAll")]
     public class DepositAllFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class ExecuteFunction : ExecuteFunctionBase { }
@@ -27,7 +33,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("execute")]
     public class ExecuteFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class GetDeployedBalanceFunction : GetDeployedBalanceFunctionBase { }
@@ -35,7 +40,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("getDeployedBalance", "uint256")]
     public class GetDeployedBalanceFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class GetPendingRewardAmountFunction : GetPendingRewardAmountFunctionBase { }
@@ -43,7 +47,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("getPendingRewardAmount", "uint256")]
     public class GetPendingRewardAmountFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class GetTvlFunction : GetTvlFunctionBase { }
@@ -51,7 +54,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("getTvl", "uint256")]
     public class GetTvlFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class GetUndeployedBalanceFunction : GetUndeployedBalanceFunctionBase { }
@@ -59,7 +61,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("getUndeployedBalance", "uint256")]
     public class GetUndeployedBalanceFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class OwnerFunction : OwnerFunctionBase { }
@@ -67,7 +68,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("owner", "address")]
     public class OwnerFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class PanicFunction : PanicFunctionBase { }
@@ -75,7 +75,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("panic")]
     public class PanicFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class RenounceOwnershipFunction : RenounceOwnershipFunctionBase { }
@@ -83,7 +82,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("renounceOwnership")]
     public class RenounceOwnershipFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class RetireFunction : RetireFunctionBase { }
@@ -91,7 +89,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("retire")]
     public class RetireFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class TransferOwnershipFunction : TransferOwnershipFunctionBase { }
@@ -108,7 +105,6 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
     [Function("unpanic")]
     public class UnpanicFunctionBase : FunctionMessage
     {
-
     }
 
     public partial class UntuckTokensFunction : UntuckTokensFunctionBase { }

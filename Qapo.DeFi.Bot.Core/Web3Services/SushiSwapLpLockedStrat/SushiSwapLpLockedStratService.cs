@@ -7,28 +7,11 @@ using Nethereum.Contracts.ContractHandlers;
 
 using Qapo.DeFi.Bot.Core.Interfaces.Web3Services;
 using Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels;
-using Qapo.DeFi.Bot.Core.Web3Services.SushiSwapLpLockedStrat.DeploymentDefinition;
 
 namespace Qapo.DeFi.Bot.Core.Web3Services.SushiSwapLpLockedStrat
 {
-    public partial class SushiSwapLpLockedStratService : ILockedStratService
+    public class SushiSwapLpLockedStratService : ILockedStratService
     {
-        public static Task<TransactionReceipt> DeployContractAndWaitForReceiptAsync(Nethereum.Web3.Web3 web3, SushiSwapLpLockedStratDeployment sushiSwapLpLockedStratDeployment, CancellationTokenSource cancellationTokenSource = null)
-        {
-            return web3.Eth.GetContractDeploymentHandler<SushiSwapLpLockedStratDeployment>().SendRequestAndWaitForReceiptAsync(sushiSwapLpLockedStratDeployment, cancellationTokenSource);
-        }
-
-        public static Task<string> DeployContractAsync(Nethereum.Web3.Web3 web3, SushiSwapLpLockedStratDeployment sushiSwapLpLockedStratDeployment)
-        {
-            return web3.Eth.GetContractDeploymentHandler<SushiSwapLpLockedStratDeployment>().SendRequestAsync(sushiSwapLpLockedStratDeployment);
-        }
-
-        public static async Task<SushiSwapLpLockedStratService> DeployContractAndGetServiceAsync(Nethereum.Web3.Web3 web3, SushiSwapLpLockedStratDeployment sushiSwapLpLockedStratDeployment, CancellationTokenSource cancellationTokenSource = null)
-        {
-            var receipt = await DeployContractAndWaitForReceiptAsync(web3, sushiSwapLpLockedStratDeployment, cancellationTokenSource);
-            return new SushiSwapLpLockedStratService(web3, receipt.ContractAddress);
-        }
-
         protected Nethereum.Web3.Web3 Web3{ get; }
 
         public ContractHandler ContractHandler { get; }
@@ -37,6 +20,26 @@ namespace Qapo.DeFi.Bot.Core.Web3Services.SushiSwapLpLockedStrat
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
+        }
+
+        public Task<string> DeployRequestAsync(DeployFunction deployFunction)
+        {
+             return ContractHandler.SendRequestAsync(deployFunction);
+        }
+
+        public Task<string> DeployRequestAsync()
+        {
+             return ContractHandler.SendRequestAsync<DeployFunction>();
+        }
+
+        public Task<TransactionReceipt> DeployRequestAndWaitForReceiptAsync(DeployFunction deployFunction, CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync(deployFunction, cancellationToken);
+        }
+
+        public Task<TransactionReceipt> DeployRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null)
+        {
+             return ContractHandler.SendRequestAndWaitForReceiptAsync<DeployFunction>(null, cancellationToken);
         }
 
         public Task<string> DepositRequestAsync(DepositFunction depositFunction)

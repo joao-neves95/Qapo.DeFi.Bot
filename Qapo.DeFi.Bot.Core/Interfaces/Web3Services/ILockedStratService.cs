@@ -10,6 +10,21 @@ namespace Qapo.DeFi.Bot.Core.Interfaces.Web3Services
 {
     public interface ILockedStratService : IWeb3Service
     {
+        /// <summary>
+        /// Deploys the underlying asset on the provider's platform/farm.
+        /// Use before starting to .Execute().
+        ///
+        /// </summary>
+        /// <param name="deployFunction"></param>
+        /// <returns></returns>
+        Task<string> DeployRequestAsync(DeployFunction deployFunction);
+
+        Task<string> DeployRequestAsync();
+
+        Task<TransactionReceipt> DeployRequestAndWaitForReceiptAsync(DeployFunction deployFunction, CancellationTokenSource cancellationToken = null);
+
+        Task<TransactionReceipt> DeployRequestAndWaitForReceiptAsync(CancellationTokenSource cancellationToken = null);
+
         Task<string> DepositRequestAsync(DepositFunction depositFunction);
 
         Task<TransactionReceipt> DepositRequestAndWaitForReceiptAsync(DepositFunction depositFunction, CancellationTokenSource cancellationToken = null);
