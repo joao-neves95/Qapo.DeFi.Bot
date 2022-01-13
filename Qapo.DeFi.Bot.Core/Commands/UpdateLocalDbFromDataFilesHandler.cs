@@ -175,24 +175,24 @@ namespace Qapo.DeFi.Bot.Core.Commands
         {
             throw new NotImplementedException();
 
-            this._loggerService.LogInformation($"Updating {BuildDataFileName(typeof(IEntity).FullName)}");
+            // this._loggerService.LogInformation($"Updating {BuildDataFileName(typeof(IEntity).FullName)}");
 
-            List<IEntity> allUpdatedEntities = await UpdateLocalDbFromDataFilesHandler
-                .ReadAllEntitiesToUpdate<IEntity>(
-                    BuildDataFilePath(request.AppConfig, typeof(IEntity).FullName)
-                )
-            ;
+            // List<IEntity> allUpdatedEntities = await UpdateLocalDbFromDataFilesHandler
+            //     .ReadAllEntitiesToUpdate<IEntity>(
+            //         BuildDataFilePath(request.AppConfig, typeof(IEntity).FullName)
+            //     )
+            // ;
 
-            await store.Update(allUpdatedEntities.ToArray());
+            // await store.Update(allUpdatedEntities.ToArray());
 
-            int[] allUpdatedEntityIds = allUpdatedEntities.Select(entity => entity.Id ?? -1).ToArray();
+            // int[] allUpdatedEntityIds = allUpdatedEntities.Select(entity => entity.Id ?? -1).ToArray();
 
-            IEntity[] entitiesToRemove = (await store.GetAll())
-                .Where(entity => !allUpdatedEntityIds.Contains(entity.Id ?? -1))
-                .ToArray()
-            ;
+            // IEntity[] entitiesToRemove = (await store.GetAll())
+            //     .Where(entity => !allUpdatedEntityIds.Contains(entity.Id ?? -1))
+            //     .ToArray()
+            // ;
 
-            await store.Remove(entitiesToRemove);
+            // await store.Remove(entitiesToRemove);
         }
 
         private static string BuildDataFilePath(AppConfig appConfig, string entityName)

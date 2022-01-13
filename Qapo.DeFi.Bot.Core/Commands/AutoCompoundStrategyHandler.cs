@@ -104,8 +104,6 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._logger.LogInformation($"Pending reward value in gas wei (native token): {pendingRewardValueInGas}");
             this._logger.LogInformation($"Pending reward value in gas decimal (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
 
-            // .swapExactTokensForTokensSupportingFeeOnTransferTokens()
-
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
 
             this._logger.LogInformation($"Execution gas estimate: {executionGasEstimate}");
