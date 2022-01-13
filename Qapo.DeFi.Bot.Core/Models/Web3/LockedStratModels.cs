@@ -185,5 +185,4 @@ namespace Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels
         [Parameter("address", "", 1)]
         public virtual string ReturnValue1 { get; set; }
     }
-
 }

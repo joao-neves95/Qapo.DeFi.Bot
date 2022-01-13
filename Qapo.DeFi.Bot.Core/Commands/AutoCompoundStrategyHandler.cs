@@ -68,7 +68,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             }
 
             ILockedStratService currentStratServiceHandler = LockedStratServicesFactory.Get(
-                request.LockedVault.LockedStratServiceType,
+                LockedStratServiceType.CommonLockedStratService,
                 web3,
                 request.LockedVault.VaultAddress
             );

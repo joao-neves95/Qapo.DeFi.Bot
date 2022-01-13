@@ -22,7 +22,7 @@ namespace Qapo.DeFi.Bot.Core.Factories
         {
             return web3ServiceType switch
             {
-                LockedStratServiceType.SushiSwapLpLockedStratService => new SushiSwapLpLockedStratService(web3, contractAddress),
+                LockedStratServiceType.CommonLockedStratService => new CommonLockedStratService(web3, contractAddress),
 
                 _ => throw new TypeAccessException("Unknown type: " + Enum.GetName(typeof(LockedStratServiceType), web3ServiceType))
             };

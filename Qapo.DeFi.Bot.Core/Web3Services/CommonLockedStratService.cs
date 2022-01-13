@@ -10,13 +10,13 @@ using Qapo.DeFi.Bot.Core.Models.Web3.LockedStratModels;
 
 namespace Qapo.DeFi.Bot.Core.Web3Services.SushiSwapLpLockedStrat
 {
-    public class SushiSwapLpLockedStratService : ILockedStratService
+    public class CommonLockedStratService : ILockedStratService
     {
         protected Nethereum.Web3.Web3 Web3{ get; }
 
         public ContractHandler ContractHandler { get; }
 
-        public SushiSwapLpLockedStratService(Nethereum.Web3.Web3 web3, string contractAddress)
+        public CommonLockedStratService(Nethereum.Web3.Web3 web3, string contractAddress)
         {
             Web3 = web3;
             ContractHandler = web3.Eth.GetContractHandler(contractAddress);
