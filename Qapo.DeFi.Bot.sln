@@ -1,0 +1,40 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30114.105
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qapo.DeFi.Bot.Core", "Qapo.DeFi.Bot.Core\Qapo.DeFi.Bot.Core.csproj", "{01F40CD3-9698-4ABA-B168-944D273D8A34}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qapo.DeFi.Bot.Infra", "Qapo.DeFi.Bot.Infra\Qapo.DeFi.Bot.Infra.csproj", "{2E863EB2-E6B3-4DF1-A2D3-D120D7D10600}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qapo.DeFi.Bot.Infra.TypeFactory", "Qapo.DeFi.Bot.Infra.TypeFactory\Qapo.DeFi.Bot.Infra.TypeFactory.csproj", "{E31B576B-4682-41B7-A3B5-332FC65B930E}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Qapo.DeFi.Bot.Worker", "Qapo.DeFi.Bot.Worker\Qapo.DeFi.Bot.Worker.csproj", "{3F28AA1F-38B9-47DB-87DB-807031AA30DB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{01F40CD3-9698-4ABA-B168-944D273D8A34}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01F40CD3-9698-4ABA-B168-944D273D8A34}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01F40CD3-9698-4ABA-B168-944D273D8A34}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01F40CD3-9698-4ABA-B168-944D273D8A34}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2E863EB2-E6B3-4DF1-A2D3-D120D7D10600}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2E863EB2-E6B3-4DF1-A2D3-D120D7D10600}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2E863EB2-E6B3-4DF1-A2D3-D120D7D10600}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2E863EB2-E6B3-4DF1-A2D3-D120D7D10600}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31B576B-4682-41B7-A3B5-332FC65B930E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31B576B-4682-41B7-A3B5-332FC65B930E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31B576B-4682-41B7-A3B5-332FC65B930E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31B576B-4682-41B7-A3B5-332FC65B930E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3F28AA1F-38B9-47DB-87DB-807031AA30DB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3F28AA1F-38B9-47DB-87DB-807031AA30DB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3F28AA1F-38B9-47DB-87DB-807031AA30DB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3F28AA1F-38B9-47DB-87DB-807031AA30DB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
