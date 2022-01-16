@@ -4,6 +4,7 @@ namespace Qapo.DeFi.Bot.Infra.TypeFactory
     {
         LocalFileConfigurationService,
         SerilogLoggerService,
+        WebScraperGasPriceService,
 
         GeneralPersistenceFileStore,
         BlockchainFileStore,

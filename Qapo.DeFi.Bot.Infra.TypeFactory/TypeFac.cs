@@ -13,6 +13,7 @@ namespace Qapo.DeFi.Bot.Infra.TypeFactory
             {
                 InfrastructureType.LocalFileConfigurationService => typeof(LocalFileConfigurationService<>),
                 InfrastructureType.SerilogLoggerService => typeof(SerilogLoggerService),
+                InfrastructureType.WebScraperGasPriceService => typeof(WebScraperGasPriceService),
 
                 InfrastructureType.GeneralPersistenceFileStore => typeof(GeneralPersistenceFileStore),
                 InfrastructureType.BlockchainFileStore => typeof(BlockchainFileStore),

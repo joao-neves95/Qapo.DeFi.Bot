@@ -75,38 +75,42 @@ namespace Qapo.DeFi.Bot.Worker
             ;
 
             containerBuilder
+                .RegisterType(TypeFac.GetType(InfrastructureType.WebScraperGasPriceService))
+                .As<IGasPriceService>()
+                .InstancePerDependency()
+            ;
+            containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.GeneralPersistenceFileStore))
                 .As<IGeneralPersistenceStore>()
                 .InstancePerLifetimeScope()
-                // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.BlockchainFileStore))
                 .As<IBlockchainStore>()
                 .InstancePerLifetimeScope()
-                // .InstancePerDependency()
+            // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.TokenFileStore))
                 .As<ITokenStore>()
                 .InstancePerLifetimeScope()
-                // .InstancePerDependency()
+            // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.DexFileStore))
                 .As<IDexStore>()
                 .InstancePerLifetimeScope()
-                // .InstancePerDependency()
+            // .InstancePerDependency()
             ;
 
             containerBuilder
                 .RegisterType(TypeFac.GetType(InfrastructureType.LockedVaultsFileStore))
                 .As<ILockedVaultsStore>()
                 .InstancePerLifetimeScope()
-                // .InstancePerDependency()
+            // .InstancePerDependency()
             ;
 
             #endregion INFRASTRUCTURE SERVICES
