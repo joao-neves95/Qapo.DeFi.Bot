@@ -32,6 +32,8 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
         private readonly ITokenStore _tokenStore;
 
+        private readonly IGasPriceService _gasPriceService;
+
         private readonly ILoggerService _logger;
 
         public AutoCompoundStrategyHandler(
@@ -39,6 +41,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             IBlockchainStore blockchainStore,
             IDexStore dexStore,
             ITokenStore tokenStore,
+            IGasPriceService gasPriceService,
             ILoggerService logger
         )
         {
@@ -46,6 +49,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._blockchainStore = blockchainStore.ThrowIfNull(nameof(IBlockchainStore));
             this._dexStore = dexStore.ThrowIfNull(nameof(IDexStore));
             this._tokenStore = tokenStore.ThrowIfNull(nameof(ITokenStore));
+            this._gasPriceService = gasPriceService.ThrowIfNull(nameof(ILoggerService));
             this._logger = logger.ThrowIfNull(nameof(ILoggerService));
         }
 
@@ -81,7 +85,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._logger.LogInformation($"Pending reward amount in wei: {pendingRewardAmount}");
             this._logger.LogInformation($"Pending reward amount decimal: {Web3.Convert.FromWei(pendingRewardAmount)}");
 
-            Dex dex = ( await this._dexStore.GetById(request.LockedVault.DexId) ).ThrowIfNull("_dexStore.GetById");
+            Dex dex = (await this._dexStore.GetById(request.LockedVault.DexId)).ThrowIfNull("_dexStore.GetById");
 
             IUniswapV2RouterService uniswapV2RouterServiceHandler = UniswapV2RouterServicesFactory.Get(
                 dex.UniswapV2RouterServiceType,
@@ -105,18 +109,30 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._logger.LogInformation($"Pending reward value in gas decimal (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
+            float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
+            decimal totalTxFee = (decimal)executionGasEstimate * (decimal)gasPrice;
 
-            this._logger.LogInformation($"Execution gas estimate: {executionGasEstimate}");
+            this._logger.LogInformation($"Execution gas price (gwey): {gasPrice}");
+            this._logger.LogInformation($"Execution gas limit (units): {executionGasEstimate}");
+            this._logger.LogInformation($"Total execution gas: {totalTxFee}");
 
             if ((
                 request.LockedVault.MinGasPercentOffsetToExecute != null
-                && pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
+                && (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
                 )
-                || pendingRewardValueInGas < executionGasEstimate.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
+                || (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
             )
             {
                 this._logger.LogInformation("Canceled (execution not profitable).");
                 return false;
+            }
+
+            float updatedGasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
+
+            if (updatedGasPrice < gasPrice)
+            {
+                gasPrice = updatedGasPrice;
+                this._logger.LogInformation($"Updating execution gas limit (units) to: {executionGasEstimate}");
             }
 
             this._logger.LogInformation("Sending .Execute() transaction...");
@@ -125,18 +141,14 @@ namespace Qapo.DeFi.Bot.Core.Commands
             TransactionReceipt transactionReceipt = await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
                 new ExecuteFunction()
                 {
-                    // TODO: Calculate the current gas price.
-                    GasPrice = Web3.Convert.ToWei(
-                        request.AppConfig.BlockchainsConfig.GetDefaultGasByChainId(request.LockedVault.BlockchainId),
-                        UnitConversion.EthUnit.Gwei
-                    ),
+                    GasPrice = Web3.Convert.ToWei(gasPrice, UnitConversion.EthUnit.Gwei),
                     Gas = executionGasEstimate
                 }
             );
 
             this._logger.LogInformation(".Execute() transaction ended.");
 
-            this._logger.LogInformation($"Gas price: {transactionReceipt.EffectiveGasPrice}");
+            this._logger.LogInformation($"Effective gas price: {transactionReceipt.EffectiveGasPrice}");
             this._logger.LogInformation($"Gas used: {transactionReceipt.GasUsed}");
 
             if (transactionReceipt.Failed())
@@ -149,7 +161,6 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
                 this._logger.LogInformation("Success.");
-                this._logger.LogInformation($"Logs: {transactionReceipt.Logs.ToString()}");
             }
 
             await this._lockedVaultsStore.Update(request.LockedVault);
