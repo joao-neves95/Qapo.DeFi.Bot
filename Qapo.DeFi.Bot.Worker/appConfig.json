@@ -18,5 +18,6 @@
     "autoCompounderConfig": {
         "//defaultMaxSecondsBetweenExecutions": "1200 seconds == 20 minutes",
         "defaultMaxSecondsBetweenExecutions": 1200,
+        "defaultMinProfitToGasPercentOffset": 3.0
     }
 }
