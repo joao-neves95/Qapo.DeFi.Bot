@@ -37,6 +37,8 @@ namespace Qapo.DeFi.Bot.Core.Models.Data
 
         public int? MinSecondsBetweenExecutions { get; set; }
 
+        public int? MaxSecondsBetweenExecutions { get; set; }
+
         public long? LastFarmedTimestamp { get; set; }
     }
 }

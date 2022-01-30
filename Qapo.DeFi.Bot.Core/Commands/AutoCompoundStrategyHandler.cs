@@ -116,11 +116,20 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._logger.LogInformation($"Execution gas limit (units): {executionGasEstimate}");
             this._logger.LogInformation($"Total execution gas: {totalTxFee}");
 
-            if ((
-                request.LockedVault.MinGasPercentOffsetToExecute != null
-                && (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
+            bool isMaxSecondsBetweenExecution = (
+                request.LockedVault.MaxSecondsBetweenExecutions != null
+                && DateTimeOffset.UtcNow.ToUnixTimeSeconds() > (request.LockedVault.LastFarmedTimestamp + request.LockedVault.MaxSecondsBetweenExecutions.Value)
                 )
-                || (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
+                || DateTimeOffset.UtcNow.ToUnixTimeSeconds() > (request.LockedVault.LastFarmedTimestamp + request.AppConfig.AutoCompounderConfig.DefaultMaxSecondsBetweenExecutions)
+                ;
+
+            if (!isMaxSecondsBetweenExecution
+                && (
+                    (request.LockedVault.MinGasPercentOffsetToExecute != null
+                    && (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
+                    )
+                    || (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
+                )
             )
             {
                 this._logger.LogInformation("Canceled (execution not profitable).");
