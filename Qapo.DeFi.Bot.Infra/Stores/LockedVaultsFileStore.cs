@@ -76,17 +76,24 @@ namespace Qapo.DeFi.Bot.Infra.Stores
                     continue;
                 }
 
-                vaultToUpdate.LockedStratServiceType = updatedLockedVault.LockedStratServiceType;
                 vaultToUpdate.Name = updatedLockedVault.Name;
-                vaultToUpdate.BlockchainId = updatedLockedVault.BlockchainId;
+
                 vaultToUpdate.UnderlyingAssetAddress = updatedLockedVault.UnderlyingAssetAddress;
                 vaultToUpdate.RewardAssetAddress = updatedLockedVault.RewardAssetAddress;
-                vaultToUpdate.DexId = updatedLockedVault.DexId;
+                vaultToUpdate.ChefAddress = updatedLockedVault.ChefAddress;
                 vaultToUpdate.PoolId = updatedLockedVault.PoolId;
-                vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVault.MinGasPercentOffsetToExecute;
-                vaultToUpdate.MinSecondsBetweenExecutions = updatedLockedVault.MinSecondsBetweenExecutions;
+
+                vaultToUpdate.BlockchainId = updatedLockedVault.BlockchainId;
+                vaultToUpdate.DexId = updatedLockedVault.DexId;
+
+                vaultToUpdate.LockedStratServiceType = updatedLockedVault.LockedStratServiceType;
+
                 vaultToUpdate.StartBlock = updatedLockedVault.StartBlock;
                 vaultToUpdate.StartTimestamp = updatedLockedVault.StartTimestamp;
+
+                vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVault.MinGasPercentOffsetToExecute;
+                vaultToUpdate.MinSecondsBetweenExecutions = updatedLockedVault.MinSecondsBetweenExecutions;
+                vaultToUpdate.MaxSecondsBetweenExecutions = updatedLockedVault.MaxSecondsBetweenExecutions;
             }
 
             await base.SaveAll(allVaults);

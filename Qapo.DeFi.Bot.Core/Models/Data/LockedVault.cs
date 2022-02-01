@@ -21,6 +21,8 @@ namespace Qapo.DeFi.Bot.Core.Models.Data
 
         public string RewardAssetAddress { get; set; }
 
+        public string ChefAddress { get; set; }
+
         public int PoolId { get; set; }
 
         public int BlockchainId { get; set; }
