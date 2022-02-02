@@ -138,9 +138,24 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             List<string> allUpdatedLockedVaultIds = allUpdatedLockedVaults.ConvertAll(lockedVault => lockedVault.VaultAddress);
 
-            List<string> allExistingLockedVaultIds = (await this._lockedVaultsStore.GetAll()).ConvertAll(lockedVault => lockedVault.VaultAddress);
-            IEnumerable<string> lockedVaultToAddIds = allUpdatedLockedVaultIds.Where(updatedVaultId => !allExistingLockedVaultIds.Contains(updatedVaultId));
-            IEnumerable<LockedVault> lockedVaultsToAdd = allUpdatedLockedVaults.Where(updatedLockedVault => lockedVaultToAddIds.Contains(updatedLockedVault.VaultAddress));
+            List<LockedVault> allExistingLockedVaults = await this._lockedVaultsStore.GetAll();
+
+            // TODO: Temporary. Refactor this.
+            for (int i = 0; i < allUpdatedLockedVaults.Count; ++i)
+            {
+                allUpdatedLockedVaults[i].LastFarmedTimestamp = allExistingLockedVaults
+                    .Find(vault => vault.VaultAddress == allUpdatedLockedVaults[i].VaultAddress)
+                    ?.LastFarmedTimestamp
+                    ;
+            }
+
+            List<string> allExistingLockedVaultIds = allExistingLockedVaults
+                .ConvertAll(lockedVault => lockedVault.VaultAddress);
+            IEnumerable<string> lockedVaultToAddIds = allUpdatedLockedVaultIds
+                .Where(updatedVaultId => !allExistingLockedVaultIds.Contains(updatedVaultId));
+            IEnumerable<LockedVault> lockedVaultsToAdd = allUpdatedLockedVaults
+                .Where(updatedLockedVault => lockedVaultToAddIds.Contains(updatedLockedVault.VaultAddress));
+
             await this._lockedVaultsStore.Add(lockedVaultsToAdd);
 
             await this._lockedVaultsStore.Update(allUpdatedLockedVaults);

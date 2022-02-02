@@ -33,7 +33,7 @@ namespace Qapo.DeFi.Bot.Infra.Stores
         {
             List<LockedVault> allLockedVaults = await base.GetAll();
 
-            for (int i = 0 ; i < entities.Count(); ++i)
+            for (int i = 0; i < entities.Count(); ++i)
             {
                 LockedVault newLockedVault = entities.ElementAt(i);
                 LockedVault existingLockedVault = allLockedVaults.Find(lockedVault => lockedVault.VaultAddress == newLockedVault.VaultAddress);
@@ -94,6 +94,8 @@ namespace Qapo.DeFi.Bot.Infra.Stores
                 vaultToUpdate.MinGasPercentOffsetToExecute = updatedLockedVault.MinGasPercentOffsetToExecute;
                 vaultToUpdate.MinSecondsBetweenExecutions = updatedLockedVault.MinSecondsBetweenExecutions;
                 vaultToUpdate.MaxSecondsBetweenExecutions = updatedLockedVault.MaxSecondsBetweenExecutions;
+
+                vaultToUpdate.LastFarmedTimestamp = updatedLockedVault.LastFarmedTimestamp;
             }
 
             await base.SaveAll(allVaults);
