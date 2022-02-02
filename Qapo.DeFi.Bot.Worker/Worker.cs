@@ -97,7 +97,7 @@ namespace Qapo.DeFi.Bot.Worker
             {
                 this._logger.LogError(
                     e,
-                    $"ERROR - [{nameof(Worker)}.{nameof(HandleDbFileStoresUpdate)}], while updating DBs"
+                    $"[{nameof(Worker)}.{nameof(HandleDbFileStoresUpdate)}]: ERROR while updating DBs"
                 );
             }
 
@@ -124,7 +124,7 @@ namespace Qapo.DeFi.Bot.Worker
                 {
                     this._logger.LogError(
                         e,
-                        $"ERROR - [{nameof(Worker)}.{nameof(HandleVaultsExecution)}], while strategy execution"
+                        $"[{nameof(Worker)}.{nameof(HandleVaultsExecution)}]: ERROR while strategy execution"
                     );
                 }
 

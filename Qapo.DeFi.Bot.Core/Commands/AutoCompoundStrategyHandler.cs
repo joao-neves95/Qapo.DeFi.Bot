@@ -114,29 +114,33 @@ namespace Qapo.DeFi.Bot.Core.Commands
             ))[1];
 
             this._logger.LogInformation($"Pending reward value in gas wei (native token): {pendingRewardValueInGas}");
-            this._logger.LogInformation($"Pending reward value in gas decimal (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
+            this._logger.LogInformation($"> Pending reward value in gas decimal (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
             float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
-            decimal totalTxFee = (decimal)executionGasEstimate * (decimal)gasPrice;
+            BigInteger totalTxFee = executionGasEstimate * (int)Math.Round((double)gasPrice, MidpointRounding.ToEven);
 
             this._logger.LogInformation($"Execution gas price (gwey): {gasPrice}");
             this._logger.LogInformation($"Execution gas limit (units): {executionGasEstimate}");
             this._logger.LogInformation($"Total execution gas: {totalTxFee}");
+            this._logger.LogInformation($"> Total execution gas decimal: {Web3.Convert.FromWei(totalTxFee)}");
 
-            bool isMaxSecondsBetweenExecution = (
+            bool isMaxSecondsBetweenExecution =
+            (
                 request.LockedVault.MaxSecondsBetweenExecutions != null
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() > (request.LockedVault.LastFarmedTimestamp + request.LockedVault.MaxSecondsBetweenExecutions.Value)
-                )
-                || DateTimeOffset.UtcNow.ToUnixTimeSeconds() > (request.LockedVault.LastFarmedTimestamp + request.AppConfig.AutoCompounderConfig.DefaultMaxSecondsBetweenExecutions)
-                ;
+            )
+            || DateTimeOffset.UtcNow.ToUnixTimeSeconds() > (request.LockedVault.LastFarmedTimestamp + request.AppConfig.AutoCompounderConfig.DefaultMaxSecondsBetweenExecutions)
+            ;
 
             if (!isMaxSecondsBetweenExecution
-                && (
-                    (request.LockedVault.MinGasPercentOffsetToExecute != null
-                    && (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
+                &&
+                (
+                    (
+                        request.LockedVault.MinGasPercentOffsetToExecute != null
+                        && pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.LockedVault.MinGasPercentOffsetToExecute.Value)
                     )
-                    || (decimal)pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
+                    || pendingRewardValueInGas < totalTxFee.IncreasePercentage(request.AppConfig.AutoCompounderConfig.DefaultMinProfitToGasPercentOffset)
                 )
             )
             {
