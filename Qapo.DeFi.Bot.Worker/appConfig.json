@@ -1,7 +1,9 @@
 {
   "localDataFilesPath": "./_data/dataFiles",
   "localJsonDbFilesPath": "./_data/localJsonDbFiles",
-  "workerMillisecondsDelay": 1000,
+  "//workerMillisecondsDelay": "60000 milliseconds == 1 minute",
+  "workerMillisecondsDelay": 60000,
+  "//secondsBetweenDbUpdate": "300 seconds == 5 minutes",
   "secondsBetweenDbUpdate": 300,
   "secretsConfig": {
     "walletAddress": "",
@@ -16,8 +18,8 @@
     "bscMaxGas": 0.0
   },
   "autoCompounderConfig": {
-    "//defaultMaxSecondsBetweenExecutions": "21600 seconds == 6 hours",
-    "defaultMaxSecondsBetweenExecutions": 21600,
+    "//defaultMaxSecondsBetweenExecutions": "43200 seconds == 12 hours",
+    "defaultMaxSecondsBetweenExecutions": 43200,
     "defaultMinProfitToGasPercentOffset": 2.0
   }
 }
