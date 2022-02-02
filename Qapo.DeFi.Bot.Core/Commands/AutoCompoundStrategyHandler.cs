@@ -65,6 +65,8 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 await this._lockedVaultsStore.Update(request.LockedVault);
 
                 this._logger.LogInformation("Canceled (first run).");
+
+                return false;
             }
 
             Blockchain currentBlockchain = await this._blockchainStore.GetByChainId(request.LockedVault.BlockchainId);
@@ -122,7 +124,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             this._logger.LogInformation($"Execution gas price (gwey): {gasPrice}");
             this._logger.LogInformation($"Execution gas limit (units): {executionGasEstimate}");
-            this._logger.LogInformation($"> Total transaction fee in decimal: {Web3.Convert.FromWei(totalTxFee)}");
+            this._logger.LogInformation($"> Total transaction fee in decimal: {Web3.Convert.FromWei(totalTxFee, UnitConversion.EthUnit.Gwei)}");
 
             bool isMaxSecondsBetweenExecution =
             (
