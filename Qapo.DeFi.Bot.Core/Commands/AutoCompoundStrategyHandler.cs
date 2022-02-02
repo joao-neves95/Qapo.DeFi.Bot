@@ -91,6 +91,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             BigInteger pendingRewardAmount = await currentStratServiceHandler.GetPendingRewardAmountQueryAsync();
             // BigInteger pendingRewardAmount = 1314855264749854181;
+            // BigInteger pendingRewardAmount = 131481;
 
             this._logger.LogInformation($"Pending reward amount in decimal: {Web3.Convert.FromWei(pendingRewardAmount)}");
 
@@ -114,11 +115,13 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 }
             ))[1];
 
+            this._logger.LogInformation($"Pending reward value in gas (native token): {pendingRewardValueInGas}");
             this._logger.LogInformation($"> Pending reward value in decimal gas (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
 
             this._logger.LogInformation($"Calculating transaction fee for .Execute()");
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
+            // BigInteger executionGasEstimate = 164396;
             float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
             BigInteger totalTxFee = executionGasEstimate * (int)Math.Round((double)gasPrice, MidpointRounding.ToEven);
 
@@ -172,7 +175,10 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             this._logger.LogInformation($"Effective gas price: {transactionReceipt.EffectiveGasPrice.Value}");
             this._logger.LogInformation($"Gas used: {transactionReceipt.GasUsed.Value}");
-            this._logger.LogInformation($"> Final total transaction fee: {transactionReceipt.GasUsed.Value * transactionReceipt.EffectiveGasPrice.Value}");
+            this._logger.LogInformation(
+                "> Final total transaction fee: " +
+                $"{Web3.Convert.FromWei(transactionReceipt.GasUsed.Value * transactionReceipt.EffectiveGasPrice.Value, UnitConversion.EthUnit.Gwei)}"
+            );
 
             if (transactionReceipt.Failed())
             {
@@ -189,8 +195,6 @@ namespace Qapo.DeFi.Bot.Core.Commands
             await this._lockedVaultsStore.Update(request.LockedVault);
 
             request = null;
-
-            this._logger.LogInformation("");
 
             return true;
         }

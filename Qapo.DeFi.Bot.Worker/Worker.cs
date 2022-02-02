@@ -50,6 +50,7 @@ namespace Qapo.DeFi.Bot.Worker
                 while (!stoppingToken.IsCancellationRequested)
                 {
                     this._logger.LogInformation($"------  Worker running at: {DateTimeOffset.Now} ------");
+                    this._logger.LogInformation($"");
 
                     AppConfig appConfig = await this._configurationService
                         .GetConfig()
@@ -64,8 +65,14 @@ namespace Qapo.DeFi.Bot.Worker
 
                     await this.HandleVaultsExecution(appConfig);
 
+                    this._logger.LogInformation($"Ended all vaults execution");
+                    this._logger.LogInformation($"");
+
+                    this._logger.LogInformation($"------  Sleeping. ------");
+
                     await Task.Delay(appConfig.WorkerMillisecondsDelay, stoppingToken).ConfigureAwait(false);
 
+                    this._logger.LogInformation($"");
                     this._logger.LogInformation($"------  End, sleeping. ------");
                     this._logger.LogInformation($"");
                 }
