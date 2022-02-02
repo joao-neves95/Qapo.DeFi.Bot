@@ -1,23 +1,23 @@
 {
-    "localDataFilesPath": "./_data/dataFiles",
-    "localJsonDbFilesPath": "./_data/localJsonDbFiles",
-    "workerMillisecondsDelay": 1000,
-    "secondsBetweenDbUpdate": 300,
-    "secretsConfig": {
-        "walletAddress": "",
-        "walletPrivateKey": ""
-    },
-    "blockchainsConfig": {
-        "polygonDefaultGas": 30,
-        "polygonMaxGas": 35,
-        "fantomDefaultGas": 210,
-        "fantomMaxGas": 300,
-        "bscDefaultGas": 0.0,
-        "bscMaxGas": 0.0
-    },
-    "autoCompounderConfig": {
-        "//defaultMaxSecondsBetweenExecutions": "21600 seconds == 6 hours",
-        "defaultMaxSecondsBetweenExecutions": 21600,
-        "defaultMinProfitToGasPercentOffset": 3.0
-    }
+  "localDataFilesPath": "./_data/dataFiles",
+  "localJsonDbFilesPath": "./_data/localJsonDbFiles",
+  "workerMillisecondsDelay": 1000,
+  "secondsBetweenDbUpdate": 300,
+  "secretsConfig": {
+    "walletAddress": "",
+    "walletPrivateKey": ""
+  },
+  "blockchainsConfig": {
+    "polygonDefaultGas": 30,
+    "polygonMaxGas": 35,
+    "fantomDefaultGas": 210,
+    "fantomMaxGas": 300,
+    "bscDefaultGas": 0.0,
+    "bscMaxGas": 0.0
+  },
+  "autoCompounderConfig": {
+    "//defaultMaxSecondsBetweenExecutions": "21600 seconds == 6 hours",
+    "defaultMaxSecondsBetweenExecutions": 21600,
+    "defaultMinProfitToGasPercentOffset": 2.0
+  }
 }
