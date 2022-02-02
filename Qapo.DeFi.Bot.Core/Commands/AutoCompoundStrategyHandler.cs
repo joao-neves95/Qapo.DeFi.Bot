@@ -90,8 +90,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             BigInteger pendingRewardAmount = await currentStratServiceHandler.GetPendingRewardAmountQueryAsync();
             // BigInteger pendingRewardAmount = 1314855264749854181;
 
-            this._logger.LogInformation($"Pending reward amount in wei: {pendingRewardAmount}");
-            this._logger.LogInformation($"Pending reward amount decimal: {Web3.Convert.FromWei(pendingRewardAmount)}");
+            this._logger.LogInformation($"Pending reward amount in decimal: {Web3.Convert.FromWei(pendingRewardAmount)}");
 
             Dex dex = (await this._dexStore.GetById(request.LockedVault.DexId)).ThrowIfNull("_dexStore.GetById");
 
@@ -113,8 +112,9 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 }
             ))[1];
 
-            this._logger.LogInformation($"Pending reward value in gas wei (native token): {pendingRewardValueInGas}");
-            this._logger.LogInformation($"> Pending reward value in gas decimal (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
+            this._logger.LogInformation($"> Pending reward value in decimal gas (native token): {Web3.Convert.FromWei(pendingRewardValueInGas)}");
+
+            this._logger.LogInformation($"Calculating transaction fee for .Execute()");
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
             float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
@@ -122,8 +122,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             this._logger.LogInformation($"Execution gas price (gwey): {gasPrice}");
             this._logger.LogInformation($"Execution gas limit (units): {executionGasEstimate}");
-            this._logger.LogInformation($"Total execution gas: {totalTxFee}");
-            this._logger.LogInformation($"> Total execution gas decimal: {Web3.Convert.FromWei(totalTxFee)}");
+            this._logger.LogInformation($"> Total transaction fee in decimal: {Web3.Convert.FromWei(totalTxFee)}");
 
             bool isMaxSecondsBetweenExecution =
             (
@@ -169,8 +168,9 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             this._logger.LogInformation(".Execute() transaction ended.");
 
-            this._logger.LogInformation($"Effective gas price: {transactionReceipt.EffectiveGasPrice}");
-            this._logger.LogInformation($"Gas used: {transactionReceipt.GasUsed}");
+            this._logger.LogInformation($"Effective gas price: {transactionReceipt.EffectiveGasPrice.Value}");
+            this._logger.LogInformation($"Gas used: {transactionReceipt.GasUsed.Value}");
+            this._logger.LogInformation($"> Final total transaction fee: {transactionReceipt.GasUsed.Value * transactionReceipt.EffectiveGasPrice.Value}");
 
             if (transactionReceipt.Failed())
             {
