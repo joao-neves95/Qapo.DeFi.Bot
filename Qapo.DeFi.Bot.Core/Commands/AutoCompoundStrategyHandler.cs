@@ -59,6 +59,14 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             request.AppConfig.ThrowIfNull(nameof(request.AppConfig));
 
+            if (request.LockedVault.LastFarmedTimestamp == null)
+            {
+                request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
+                await this._lockedVaultsStore.Update(request.LockedVault);
+
+                this._logger.LogInformation("Canceled (first run).");
+            }
+
             Blockchain currentBlockchain = await this._blockchainStore.GetByChainId(request.LockedVault.BlockchainId);
 
             Web3 web3 = new Web3(
@@ -183,7 +191,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
         private async Task<bool> IsToCancelExecution(AutoCompoundStrategy request, Web3 web3Client)
         {
-            if (request.LockedVault.MinSecondsBetweenExecutions != null && request.LockedVault.LastFarmedTimestamp != null
+            if (request.LockedVault.MinSecondsBetweenExecutions != null
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < (request.LockedVault.LastFarmedTimestamp + request.LockedVault.MinSecondsBetweenExecutions)
             )
             {
