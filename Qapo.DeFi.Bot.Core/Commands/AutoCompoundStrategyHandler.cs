@@ -122,12 +122,17 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
             // BigInteger executionGasEstimate = 164396;
+
             float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
-            BigInteger totalTxFee = executionGasEstimate * (int)Math.Round((double)gasPrice, MidpointRounding.ToEven);
+
+            BigInteger totalTxFee = Web3.Convert.ToWei(
+                executionGasEstimate * (int)Math.Round((double)gasPrice, MidpointRounding.ToEven),
+                UnitConversion.EthUnit.Gwei
+            );
 
             this._logger.LogInformation($"Execution gas price (gwey): {gasPrice}");
             this._logger.LogInformation($"Execution gas limit (units): {executionGasEstimate}");
-            this._logger.LogInformation($"> Total transaction fee in decimal: {Web3.Convert.FromWei(totalTxFee, UnitConversion.EthUnit.Gwei)}");
+            this._logger.LogInformation($"> Total transaction fee in decimal: {Web3.Convert.FromWei(totalTxFee)}");
 
             bool isMaxSecondsBetweenExecution =
             (
