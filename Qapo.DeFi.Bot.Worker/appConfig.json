@@ -18,8 +18,8 @@
     "bscMaxGas": 0.0
   },
   "autoCompounderConfig": {
-    "//defaultMaxSecondsBetweenExecutions": "43200 seconds == 12 hours",
-    "defaultMaxSecondsBetweenExecutions": 43200,
+    "//defaultMaxSecondsBetweenExecutions": "604800 seconds == 1 weeks",
+    "defaultMaxSecondsBetweenExecutions": 604800,
     "defaultMinProfitToGasPercentOffset": 2.0
   }
 }
