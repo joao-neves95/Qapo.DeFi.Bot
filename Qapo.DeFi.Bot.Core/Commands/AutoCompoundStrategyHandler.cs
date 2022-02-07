@@ -121,9 +121,10 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._logger.LogInformation($"Calculating transaction fee for .Execute()");
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
-            // BigInteger executionGasEstimate = 164396;
+            // BigInteger executionGasEstimate = 33305;
 
             float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
+            // float gasPrice = 276.508f;
 
             BigInteger totalTxFee = Web3.Convert.ToWei(
                 executionGasEstimate * (int)Math.Round((double)gasPrice, MidpointRounding.ToEven),
@@ -196,6 +197,8 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
                 this._logger.LogInformation("Success.");
             }
+
+            // request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
             await this._lockedVaultsStore.Update(request.LockedVault);
 
