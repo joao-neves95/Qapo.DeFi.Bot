@@ -11,9 +11,9 @@
   },
   "blockchainsConfig": {
     "polygonDefaultGas": 30,
-    "polygonMaxGas": 35,
-    "fantomDefaultGas": 210,
-    "fantomMaxGas": 300,
+    "polygonMaxGas": 50,
+    "fantomDefaultGas": 300,
+    "fantomMaxGas": 1000,
     "bscDefaultGas": 0.0,
     "bscMaxGas": 0.0
   },
