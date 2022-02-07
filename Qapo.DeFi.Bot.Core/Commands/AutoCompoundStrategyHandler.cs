@@ -162,7 +162,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             if (updatedGasPrice < gasPrice)
             {
                 gasPrice = updatedGasPrice;
-                this._logger.LogInformation($"Updating execution gas limit (units) to: {executionGasEstimate}");
+                this._logger.LogInformation($"Updating execution gas price to: {gasPrice}");
             }
 
             this._logger.LogInformation("Sending .Execute() transaction...");
