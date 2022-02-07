@@ -62,6 +62,7 @@ namespace Qapo.DeFi.Bot.Worker
                     await this.HandleDbFileStoresUpdate(appConfig);
 
                     this._logger.LogInformation($"Executing all vaults");
+                    this._logger.LogInformation($"");
 
                     await this.HandleVaultsExecution(appConfig);
 

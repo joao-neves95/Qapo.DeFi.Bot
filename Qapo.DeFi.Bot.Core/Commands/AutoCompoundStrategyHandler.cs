@@ -121,7 +121,8 @@ namespace Qapo.DeFi.Bot.Core.Commands
             this._logger.LogInformation($"Calculating transaction fee for .Execute()");
 
             BigInteger executionGasEstimate = (await currentStratServiceHandler.ContractHandler.EstimateGasAsync<ExecuteFunction>()).Value;
-            // BigInteger executionGasEstimate = 33305;
+
+            // BigInteger executionGasEstimate = 333050;
 
             float gasPrice = await this._gasPriceService.GetStandardGasPrice(request.LockedVault.BlockchainId);
             // float gasPrice = 276.508f;
@@ -168,7 +169,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             this._logger.LogInformation("Sending .Execute() transaction...");
 
-            // TODO: Use Poly for retry. If it fails, increase the gas by {amount} offset.
+            // TODO: Use Poly for retry. If it fails.
             TransactionReceipt transactionReceipt = await currentStratServiceHandler.ExecuteRequestAndWaitForReceiptAsync(
                 new ExecuteFunction()
                 {
@@ -179,23 +180,15 @@ namespace Qapo.DeFi.Bot.Core.Commands
 
             this._logger.LogInformation(".Execute() transaction ended.");
 
-            this._logger.LogInformation($"Effective gas price: {transactionReceipt.EffectiveGasPrice.Value}");
-            this._logger.LogInformation($"Gas used: {transactionReceipt.GasUsed.Value}");
-            this._logger.LogInformation(
-                "> Final total transaction fee: " +
-                $"{Web3.Convert.FromWei(transactionReceipt.GasUsed.Value * transactionReceipt.EffectiveGasPrice.Value, UnitConversion.EthUnit.Gwei)}"
-            );
-
             if (transactionReceipt.Failed())
             {
-                this._logger.LogError(".Execute() transaction failed.");
-                this._logger.LogError($"Logs: {transactionReceipt.Logs.ToString()}");
+                this._logger.LogError("> .Execute() transaction failed.");
             }
             else
             {
                 request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-                this._logger.LogInformation("Success.");
+                this._logger.LogError("> .Execute() transaction suceeded.");
             }
 
             // request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
