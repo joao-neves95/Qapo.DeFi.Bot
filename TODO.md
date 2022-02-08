@@ -1,12 +1,5 @@
 ## TODO
 
-- Testing:
-  - [x]: Infrastructure.
-  - [x]: Web3 services connection.
-  - [x] : Smart contract review.
-  - [x]: Smart contract security review (I.e. is everything locked).
-  - [x]: Test the smart contracts by hand on-chain/production.
-  - [x]: Test the entire system in production.
 - Add a maximum gas price based on a threshold of the average price.
 - Improve the strategies mechanic and architecture
 - Add a RabbitMQ queue to have multiple instances executing the strategies (when the need for it arises).
