@@ -188,7 +188,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
             {
                 request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
 
-                this._logger.LogError("> .Execute() transaction suceeded.");
+                this._logger.LogInformation("> .Execute() transaction succeeded.");
             }
 
             // request.LockedVault.LastFarmedTimestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds();
@@ -214,7 +214,7 @@ namespace Qapo.DeFi.Bot.Core.Commands
                 && DateTimeOffset.UtcNow.ToUnixTimeSeconds() < request.LockedVault.StartTimestamp
             )
             {
-                this._logger.LogInformation($"Cancelled ({request.LockedVault.StartTimestamp}).");
+                this._logger.LogInformation($"Cancelled ({nameof(request.LockedVault.StartTimestamp)}).");
                 return true;
             }
 
